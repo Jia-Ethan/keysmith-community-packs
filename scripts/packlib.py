@@ -18,12 +18,12 @@ import json
 import re
 import zipfile
 from pathlib import Path, PurePosixPath
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 SCHEMA = 1
 TOOLS = ("claude", "codex", "grok", "zcode", "pi", "dsh")
 REWRITE_TOOLS = ("claude", "codex", "grok", "zcode")
-KINDS = ("prompts", "rules")
+KINDS = ("prompts", "rules", "harness")
 RULES_FILE = "rules.json"
 # The first app version that understands rule packs (for Codex only).
 RULES_MIN_APP = (0, 4, 0)
@@ -47,8 +47,73 @@ MAX_ARCHIVE_BYTES = 2 * 1024 * 1024  # the .zip itself
 MAX_TAGS = 8
 MAX_TAG_LEN = 24
 
+# Harness packs (SPEC §2.2): agent components (skills, slash commands, subagents, rule files)
+# that the app writes into each agent's own directories. Tier 1 only: nothing in them runs code.
+HARNESS_MIN_APP = (0, 9, 0)
+HARNESS_TOOLS = ("claude", "codex", "grok")
+HARNESS_TIERS = (1,)
+COMPONENT_TYPES = ("skill", "command", "agent", "rule")
+# The agents each component type has a place on. A component cannot name an agent that has
+# nowhere to put it (Codex has no slash commands or rule files).
+COMPONENT_TOOLS = {
+    "skill": ("claude", "codex", "grok"),
+    "command": ("claude", "grok"),
+    "agent": ("claude", "codex", "grok"),
+    "rule": ("claude", "grok"),
+}
+# Skills and commands are both invoked as /name, so they share one namespace.
+COMPONENT_NAMESPACE = {"skill": "invocable", "command": "invocable", "agent": "agent", "rule": "rule"}
+# Frontmatter is an allowlist. Anything else (allowed-tools, hooks, model, mcpServers,
+# permissionMode, ...) widens what the agent may do, so a tier-1 pack cannot carry it.
+FRONTMATTER_KEYS = {
+    "skill": ("name", "description"),
+    "command": ("description", "argument-hint"),
+    "agent": ("name", "description"),
+    "rule": (),
+}
+FRONTMATTER_REQUIRED = {"skill": ("name", "description"), "command": (), "agent": ("name", "description"), "rule": ()}
+MAX_COMPONENTS = 50
+MAX_SKILL_FILES = 20
+MAX_COMPONENT_NAME = 40
+MAX_FRONTMATTER_VALUE = 1024
+COMPONENT_KEYS = {"id", "type", "name", "tools", "title", "files"}
+# Names beginning with these are kept for official packs (ids starting with "keysmith.").
+RESERVED_NAME_PREFIXES = ("ks-", "keysmith")
+OFFICIAL_ID_PREFIX = "keysmith."
+# Names the supported agents already use. A skill or command by one of these names would be
+# shadowed by, or shadow, the agent's own slash command; a subagent would collide with a
+# built-in subagent. Fixed for schema 1: a name an agent adds later is the app's install-time
+# conflict check, not a format change, so a published pack never turns invalid.
+RESERVED_INVOCABLE_NAMES = frozenset({
+    "add-dir", "agents", "approvals", "bug", "clear", "compact", "config", "context", "cost",
+    "diff", "doctor", "exit", "export", "fast", "feedback", "fork", "help", "hooks", "ide", "init",
+    "login", "logout", "mcp", "memory", "mention", "model", "new", "output-style", "permissions",
+    "plan", "plugin", "plugins", "pr-comments", "prompts", "quit", "release-notes", "resume",
+    "review", "rewind", "sandbox", "security-review", "settings", "skills", "status",
+    "statusline", "theme", "todos", "undo", "upgrade", "usage", "vim",
+    # Skills Claude Code ships with, invoked the same way.
+    "batch", "claude-api", "code-review", "debug", "fewer-permission-prompts", "keybindings-help",
+    "loop", "run", "simplify", "update-config",
+})
+RESERVED_AGENT_NAMES = frozenset({"default", "explore", "explorer", "general-purpose", "plan", "statusline-setup", "worker"})
+
 PACK_ID = re.compile(r"^[a-z0-9]+([.-][a-z0-9]+)*$")
 ITEM_ID = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
+COMPONENT_NAME = re.compile(r"^[a-z][a-z0-9]*(-[a-z0-9]+)*$")
+FRONTMATTER_LINE = re.compile(r"^([a-z][a-z0-9-]*):(?: +(.*))?$")
+# Plain scalars YAML reads as something other than a string (booleans, null, numbers, dates).
+YAML_NOT_A_STRING = re.compile(
+    r"^(?:true|false|yes|no|on|off|y|n|null|~|[-+]?0[xob][0-9a-f_]+|[-+.]?[0-9][0-9_.:e+-]*|[-+]?\.inf|\.nan)$",
+    re.IGNORECASE,
+)
+# `!` followed by a backtick, or a fence whose info string starts with `!`: Claude Code runs
+# these as shell commands when the skill or command is invoked. That is code, so not tier 1.
+SHELL_INJECTION = re.compile(r"!`|^[ \t]*(?:`{3,}|~{3,})[ \t]*!", re.MULTILINE)
+# `@~/...`, `@/...`, `@$HOME`, `@../`: pulls a file from outside the project into the context.
+OUTSIDE_FILE_REFERENCE = re.compile(r"(?:^|[\s(\[])@(?:[~/$]|\.\.)", re.MULTILINE)
+# Characters that hide or reorder text, so a reviewer would not see what the model sees:
+# bidirectional controls, zero-width space and word joiner, byte order mark, Unicode tags.
+HIDDEN_CHARACTERS = re.compile("[\u061c\u200b\u200e\u200f\u202a-\u202e\u2060-\u2064\u2066-\u2069\ufeff\U000e0000-\U000e007f]")
 SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
@@ -122,6 +187,10 @@ def validate_manifest(manifest: Any, where: str = "pack.json") -> Dict[str, Any]
         raise PackError(f"{where}: a pack whose tools include 'dsh' needs min_app_version 0.8.1")
     if manifest["kind"] == "rules":
         return _validate_rules_manifest(manifest, tools, where)
+    if manifest["kind"] == "harness":
+        return _validate_harness_manifest(manifest, tools, where)
+    if "tier" in manifest or "components" in manifest:
+        raise PackError(f"{where}: tier and components are only for harness packs")
     items = manifest.get("items")
     if not isinstance(items, list) or not items or len(items) > MAX_ITEMS:
         raise PackError(f"{where}: items must be a list of 1 to {MAX_ITEMS} entries")
@@ -179,6 +248,8 @@ def _validate_rules_manifest(manifest: Dict[str, Any], tools: List[str], where: 
         raise PackError(f"{where}: {what} needs min_app_version {'.'.join(map(str, needs))} or later")
     if "items" in manifest:
         raise PackError(f"{where}: a rule pack has no items")
+    if "tier" in manifest or "components" in manifest:
+        raise PackError(f"{where}: tier and components are only for harness packs")
     rules = manifest.get("rules")
     if not isinstance(rules, dict) or set(rules) != {"file", "sha256"}:
         raise PackError(f"{where}: rules must be an object with file and sha256")
@@ -189,11 +260,136 @@ def _validate_rules_manifest(manifest: Dict[str, Any], tools: List[str], where: 
     return manifest
 
 
+def _validate_harness_manifest(manifest: Dict[str, Any], tools: List[str], where: str) -> Dict[str, Any]:
+    if any(tool not in HARNESS_TOOLS for tool in tools):
+        raise PackError(f"{where}: harness pack tools must be from {list(HARNESS_TOOLS)}")
+    if semver_tuple(manifest["min_app_version"]) < HARNESS_MIN_APP:
+        raise PackError(f"{where}: a harness pack needs min_app_version {'.'.join(map(str, HARNESS_MIN_APP))} or later")
+    for key in ("items", "rules"):
+        if key in manifest:
+            raise PackError(f"{where}: a harness pack has no {key}")
+    tier = manifest.get("tier")
+    if isinstance(tier, bool) or tier not in HARNESS_TIERS:
+        raise PackError(f"{where}: tier must be 1 (tier 2, components that run code, is not in the format yet)")
+    components = manifest.get("components")
+    if not isinstance(components, list) or not components or len(components) > MAX_COMPONENTS:
+        raise PackError(f"{where}: components must be a list of 1 to {MAX_COMPONENTS} entries")
+    official = manifest["id"].startswith(OFFICIAL_ID_PREFIX)
+    ids = set()
+    names = set()
+    paths = set()
+    folded = set()
+    covered = set()
+    for index, component in enumerate(components):
+        label = f"{where}: components[{index}]"
+        if not isinstance(component, dict):
+            raise PackError(f"{label} must be an object")
+        extra = set(component) - COMPONENT_KEYS
+        if extra:
+            raise PackError(f"{label}: unknown keys {sorted(extra)}")
+        component_id = component.get("id")
+        if not isinstance(component_id, str) or not ITEM_ID.match(component_id) or len(component_id) > 64:
+            raise PackError(f"{label}: id must be lowercase letters, digits and hyphens (max 64)")
+        if component_id in ids:
+            raise PackError(f"{label}: duplicate id {component_id!r}")
+        ids.add(component_id)
+        kind = component.get("type")
+        if kind not in COMPONENT_TYPES:
+            raise PackError(f"{label}: type must be one of {list(COMPONENT_TYPES)}")
+        name = component.get("name")
+        if not isinstance(name, str) or not COMPONENT_NAME.match(name) or len(name) > MAX_COMPONENT_NAME:
+            raise PackError(
+                f"{label}: name must start with a letter and be lowercase letters, digits and hyphens (max {MAX_COMPONENT_NAME})"
+            )
+        if not official and name.startswith(RESERVED_NAME_PREFIXES):
+            raise PackError(f"{label}: names starting with 'ks-' or 'keysmith' are kept for official packs")
+        namespace = COMPONENT_NAMESPACE[kind]
+        if namespace == "invocable" and name in RESERVED_INVOCABLE_NAMES:
+            raise PackError(f"{label}: /{name} is a built-in command of a supported agent")
+        if namespace == "agent" and name in RESERVED_AGENT_NAMES:
+            raise PackError(f"{label}: {name!r} is a built-in subagent of a supported agent")
+        if (namespace, name) in names:
+            raise PackError(f"{label}: another component already uses the name {name!r}")
+        names.add((namespace, name))
+        component_tools = component.get("tools")
+        if (
+            not isinstance(component_tools, list)
+            or not component_tools
+            or len(set(component_tools)) != len(component_tools)
+            or any(tool not in tools for tool in component_tools)
+        ):
+            raise PackError(f"{label}: tools must be a non-empty list of unique names from this pack's tools")
+        unsupported = [tool for tool in component_tools if tool not in COMPONENT_TOOLS[kind]]
+        if unsupported:
+            raise PackError(f"{label}: a {kind} has nowhere to go on {unsupported}")
+        covered.update(component_tools)
+        _localized(component.get("title"), "title", label)
+        files = component.get("files")
+        if not isinstance(files, list) or not files:
+            raise PackError(f"{label}: files must be a non-empty list")
+        for position, entry in enumerate(files):
+            at = f"{label}.files[{position}]"
+            if not isinstance(entry, dict) or set(entry) != {"path", "sha256"}:
+                raise PackError(f"{at}: must be an object with only path and sha256")
+            path = safe_relative_path(entry["path"])
+            if not path.endswith(".md"):
+                raise PackError(f"{at}: only .md files are allowed")
+            if path in paths or path.casefold() in folded:
+                raise PackError(f"{at}: file {path!r} is used twice")
+            paths.add(path)
+            folded.add(path.casefold())
+            if not isinstance(entry["sha256"], str) or not SHA256.match(entry["sha256"]):
+                raise PackError(f"{at}: sha256 must be 64 lowercase hex characters")
+        listed = [entry["path"] for entry in files]
+        if kind == "skill":
+            root = f"components/{component_id}/"
+            if len(files) > MAX_SKILL_FILES:
+                raise PackError(f"{label}: a skill has at most {MAX_SKILL_FILES} files")
+            if any(not path.startswith(root) for path in listed):
+                raise PackError(f"{label}: a skill's files must be under {root}")
+            if root + "SKILL.md" not in listed:
+                raise PackError(f"{label}: a skill needs {root}SKILL.md")
+            nested = [p for p in listed if p != root + "SKILL.md" and PurePosixPath(p).name.casefold() == "skill.md"]
+            if nested:
+                raise PackError(f"{label}: only the skill's top-level SKILL.md may be named SKILL.md ({nested[0]})")
+        else:
+            expected = f"components/{component_id}.md"
+            if listed != [expected]:
+                raise PackError(f"{label}: a {kind} is exactly one file, {expected}")
+    if covered != set(tools):
+        missing = sorted(set(tools) - covered)
+        raise PackError(f"{where}: no component is for {missing}; drop them from tools or add a component")
+    if len(paths) > MAX_ITEMS:
+        raise PackError(f"{where}: a harness pack has at most {MAX_ITEMS} files")
+    return manifest
+
+
 def manifest_files(manifest: Dict[str, Any]) -> List[str]:
     """The files a pack's manifest lists, besides pack.json."""
     if manifest["kind"] == "rules":
         return [manifest["rules"]["file"]]
+    if manifest["kind"] == "harness":
+        return sorted(entry["path"] for component in manifest["components"] for entry in component["files"])
     return sorted(item["file"] for item in manifest["items"])
+
+
+def harness_files(manifest: Dict[str, Any]) -> List[Tuple[Dict[str, Any], Dict[str, str]]]:
+    """Every (component, file entry) of a harness pack, in manifest order."""
+    return [(component, entry) for component in manifest["components"] for entry in component["files"]]
+
+
+def component_summary(manifest: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """What an index entry lists about a harness pack's components (never file contents)."""
+    return [
+        {
+            "id": component["id"],
+            "type": component["type"],
+            "name": component["name"],
+            "tools": component["tools"],
+            "title": component["title"],
+        }
+        for component in manifest["components"]
+    ]
 
 
 def _is_control(char: str) -> bool:
@@ -248,6 +444,112 @@ def _check_prompt_bytes(data: bytes, label: str) -> None:
         raise PackError(f"{label}: file is not UTF-8")
 
 
+def _harness_text(data: bytes, label: str) -> str:
+    if not data.strip():
+        raise PackError(f"{label}: file is empty")
+    if len(data) > MAX_FILE_BYTES:
+        raise PackError(f"{label}: file is larger than {MAX_FILE_BYTES} bytes")
+    try:
+        text = data.decode("utf-8")
+    except UnicodeDecodeError:
+        raise PackError(f"{label}: file is not UTF-8")
+    if "\r" in text:
+        raise PackError(f"{label}: use LF line endings (found a carriage return)")
+    bad = next((char for char in text if char != "\t" and char != "\n" and _is_control(char)), None)
+    if bad is not None:
+        raise PackError(f"{label}: contains the control character U+{ord(bad):04X}")
+    hidden = HIDDEN_CHARACTERS.search(text)
+    if hidden:
+        raise PackError(f"{label}: contains the invisible character U+{ord(hidden.group()):04X}")
+    if SHELL_INJECTION.search(text):
+        raise PackError(f"{label}: !`command` and ```! blocks run shell commands; not allowed in a tier-1 pack")
+    if OUTSIDE_FILE_REFERENCE.search(text):
+        raise PackError(f"{label}: @ file references outside the project (@~/, @/, @$, @..) are not allowed")
+    return text
+
+
+def split_frontmatter(text: str, label: str) -> Tuple[Optional[Dict[str, str]], str]:
+    """A strict frontmatter subset: `---`, then one `key: value` per line, then `---`.
+
+    Values are single-line plain or quoted scalars. Anything YAML would read differently
+    from how it looks (lists, maps, block scalars, tags, anchors, comments) is rejected,
+    so what a reviewer sees is what the agent parses.
+    """
+    lines = text.split("\n")
+    if lines[0].rstrip(" \t") != "---":
+        return None, text
+    if lines[0] != "---":
+        raise PackError(f"{label}: the opening --- must be alone on its line")
+    try:
+        end = next(i for i in range(1, len(lines)) if lines[i] == "---")
+    except StopIteration:
+        raise PackError(f"{label}: frontmatter is not closed with ---")
+    fields: Dict[str, str] = {}
+    for number, line in enumerate(lines[1:end], start=2):
+        at = f"{label}: frontmatter line {number}"
+        if not line.strip():
+            continue
+        match = FRONTMATTER_LINE.match(line)
+        if not match:
+            raise PackError(f"{at}: must be `key: value` on one line")
+        key, raw = match.group(1), (match.group(2) or "").strip()
+        if key in fields:
+            raise PackError(f"{at}: duplicate key {key!r}")
+        if not raw:
+            raise PackError(f"{at}: {key} needs a value on the same line")
+        if raw[0] in "\"'":
+            quote = raw[0]
+            if len(raw) < 2 or raw[-1] != quote or quote in raw[1:-1] or (quote == '"' and "\\" in raw):
+                raise PackError(f"{at}: a quoted value must be one plain {quote}...{quote} string")
+            value = raw[1:-1]
+        else:
+            if (
+                raw[0] in "[]{}|>&*!%@`#,?:-\"'"
+                or ": " in raw
+                or " #" in raw
+                or raw.endswith(":")
+                or YAML_NOT_A_STRING.match(raw)
+            ):
+                raise PackError(f"{at}: put the value of {key} in double quotes")
+            value = raw
+        if not value.strip():
+            raise PackError(f"{at}: {key} must not be empty")
+        if len(value) > MAX_FRONTMATTER_VALUE:
+            raise PackError(f"{at}: {key} is longer than {MAX_FRONTMATTER_VALUE} characters")
+        fields[key] = value
+    return fields, "\n".join(lines[end + 1:])
+
+
+def check_component_bytes(data: bytes, component: Dict[str, Any], path: str, label: str) -> None:
+    """One harness file, checked the way the app checks it before writing it anywhere."""
+    text = _harness_text(data, label)
+    kind = component["type"]
+    primary = path == f"components/{component['id']}/SKILL.md" if kind == "skill" else True
+    if not primary:
+        # A skill's supporting file: read on demand, never parsed for metadata.
+        return
+    fields, body = split_frontmatter(text, label)
+    if not body.strip():
+        raise PackError(f"{label}: has no instructions after the frontmatter")
+    allowed = FRONTMATTER_KEYS[kind]
+    if fields is None:
+        if FRONTMATTER_REQUIRED[kind]:
+            raise PackError(f"{label}: a {kind} needs frontmatter with {list(FRONTMATTER_REQUIRED[kind])}")
+        return
+    if not allowed:
+        raise PackError(f"{label}: a {kind} file has no frontmatter")
+    extra = sorted(set(fields) - set(allowed))
+    if extra:
+        raise PackError(f"{label}: frontmatter key(s) {extra} are not allowed for a {kind} (allowed: {list(allowed)})")
+    missing = [key for key in FRONTMATTER_REQUIRED[kind] if key not in fields]
+    if missing:
+        raise PackError(f"{label}: frontmatter is missing {missing}")
+    if "name" in fields and fields["name"] != component["name"]:
+        raise PackError(f"{label}: frontmatter name {fields['name']!r} must equal the component name {component['name']!r}")
+    if kind == "agent" and "codex" in component["tools"] and "\'\'\'" in body:
+        raise PackError(f"{label}: a Codex subagent's instructions cannot contain three single quotes in a row")
+
+
 def load_pack(directory: Path) -> Dict[str, Any]:
     """Validate a pack directory and return its manifest. Every file must be accounted for."""
     directory = Path(directory)
@@ -283,6 +585,17 @@ def load_pack(directory: Path) -> Dict[str, Any]:
             raise PackError(f"{directory.name}/{item['file']}: sha256 does not match pack.json")
         listed.add(item["file"])
         total += len(data)
+    if manifest["kind"] == "harness":
+        for component, entry in harness_files(manifest):
+            path = directory / entry["path"]
+            if path.is_symlink() or not path.is_file():
+                raise PackError(f"{directory.name}: {entry['path']} is missing or not a regular file")
+            data = path.read_bytes()
+            check_component_bytes(data, component, entry["path"], f"{directory.name}/{entry['path']}")
+            if sha256_hex(data) != entry["sha256"]:
+                raise PackError(f"{directory.name}/{entry['path']}: sha256 does not match pack.json")
+            listed.add(entry["path"])
+            total += len(data)
     if total > MAX_PACK_BYTES:
         raise PackError(f"{directory.name}: files add up to more than {MAX_PACK_BYTES} bytes")
     for found in sorted(directory.rglob("*")):
@@ -349,6 +662,16 @@ def check_zip(data: bytes, expected: Optional[Dict[str, Any]] = None) -> Dict[st
             _check_prompt_bytes(data_item, item["file"])
             if sha256_hex(data_item) != item["sha256"]:
                 raise PackError(f"{item['file']}: sha256 does not match pack.json")
+        if manifest["kind"] == "harness":
+            total = 0
+            for component, entry in harness_files(manifest):
+                data_file = archive.read(entry["path"])
+                check_component_bytes(data_file, component, entry["path"], entry["path"])
+                if sha256_hex(data_file) != entry["sha256"]:
+                    raise PackError(f"{entry['path']}: sha256 does not match pack.json")
+                total += len(data_file)
+            if total > MAX_PACK_BYTES:
+                raise PackError(f"files add up to more than {MAX_PACK_BYTES} bytes")
     if expected is not None:
         for key in ("id", "version", "kind"):
             if manifest[key] != expected.get(key):
@@ -381,6 +704,9 @@ def build_index(packs_dir: Path, out_dir: Path, base_url: str, generated_at: str
             "sha256": sha256_hex(archive),
             "size": len(archive),
         }
+        if manifest["kind"] == "harness":
+            entry["tier"] = manifest["tier"]
+            entry["components"] = component_summary(manifest)
         if manifest.get("opaque") is True:
             entry["opaque"] = True
         entries.append(entry)

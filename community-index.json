@@ -318,6 +318,90 @@
       "version": "0.1.0"
     },
     {
+      "components": [
+        {
+          "id": "pre-pr-review",
+          "name": "pre-pr-review",
+          "title": {
+            "en": "Review before the PR",
+            "zh-CN": "开 PR 前审一遍"
+          },
+          "tools": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "type": "skill"
+        },
+        {
+          "id": "review-staged",
+          "name": "review-staged",
+          "title": {
+            "en": "Review the staged change",
+            "zh-CN": "审查暂存的改动"
+          },
+          "tools": [
+            "claude",
+            "grok"
+          ],
+          "type": "command"
+        },
+        {
+          "id": "diff-reviewer",
+          "name": "diff-reviewer",
+          "title": {
+            "en": "Read-only reviewer",
+            "zh-CN": "只读审查员"
+          },
+          "tools": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "type": "agent"
+        }
+      ],
+      "description": {
+        "en": "Review before the PR: a skill, a slash command and a read-only reviewer subagent.",
+        "zh-CN": "开 PR 前的审查：一个技能、一个斜杠命令、一个只读的审查子 Agent。"
+      },
+      "id": "jia.review-kit",
+      "item_count": 0,
+      "kind": "harness",
+      "license": {
+        "spdx": "MIT"
+      },
+      "meta": {
+        "author": {
+          "handle": "jia",
+          "name": "Jia",
+          "url": "https://github.com/Jia-Ethan"
+        },
+        "category": "code-review",
+        "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+        "submitted_at": "2026-11-01",
+        "summary": {
+          "en": "The first harness pack: a /pre-pr-review skill, a /review-staged command and a diff-reviewer subagent for Claude Code, Codex and Grok. Nothing in it runs code.",
+          "zh-CN": "第一个组件包：/pre-pr-review 技能、/review-staged 命令和一个 diff-reviewer 子 Agent，适用 Claude Code、Codex、Grok。包里没有任何会运行的代码。"
+        }
+      },
+      "min_app_version": "0.9.0",
+      "name": {
+        "en": "Review kit",
+        "zh-CN": "审查工具箱"
+      },
+      "sha256": "476e834c90900c9f7e1431631a35a075b490b0c3f260c8fffa06a86c00cbf320",
+      "size": 3313,
+      "tier": 1,
+      "tools": [
+        "claude",
+        "codex",
+        "grok"
+      ],
+      "url": "https://example.invalid/community-packs/jia.review-kit-0.1.0.zip",
+      "version": "0.1.0"
+    },
+    {
       "description": {
         "en": "Treat the task as a spec: a behaviour checklist, tests against it, edges covered, then the implementation.",
         "zh-CN": "把任务当规格:先列行为清单、照清单写测试、覆盖边界,双方对齐后再写实现。"

@@ -1,0 +1,89 @@
+{
+  "components": [
+    {
+      "files": [
+        {
+          "path": "components/pre-pr-review/SKILL.md",
+          "sha256": "b1251bdd7bbd322ef7248af04a40f5d16cfd4fb1b441999fb9b4dc5d643c4518"
+        },
+        {
+          "path": "components/pre-pr-review/checklist.md",
+          "sha256": "3c731622632c5dbce00b5f5de851bdf23eb7aea467307dede59278debc8b41a1"
+        }
+      ],
+      "id": "pre-pr-review",
+      "name": "pre-pr-review",
+      "title": {
+        "en": "Review before the PR",
+        "zh-CN": "开 PR 前审一遍"
+      },
+      "tools": [
+        "claude",
+        "codex",
+        "grok"
+      ],
+      "type": "skill"
+    },
+    {
+      "files": [
+        {
+          "path": "components/review-staged.md",
+          "sha256": "ccf731072d433ce192bf65c13f9fa9f3b7cf04a7464c0bb5a1886eae39d125d6"
+        }
+      ],
+      "id": "review-staged",
+      "name": "review-staged",
+      "title": {
+        "en": "Review the staged change",
+        "zh-CN": "审查暂存的改动"
+      },
+      "tools": [
+        "claude",
+        "grok"
+      ],
+      "type": "command"
+    },
+    {
+      "files": [
+        {
+          "path": "components/diff-reviewer.md",
+          "sha256": "721c75ac18e7b6f79a8252e5165cb5c5c3a2ef66cc671a5ebcb081048ddbe0c9"
+        }
+      ],
+      "id": "diff-reviewer",
+      "name": "diff-reviewer",
+      "title": {
+        "en": "Read-only reviewer",
+        "zh-CN": "只读审查员"
+      },
+      "tools": [
+        "claude",
+        "codex",
+        "grok"
+      ],
+      "type": "agent"
+    }
+  ],
+  "description": {
+    "en": "Review before the PR: a skill, a slash command and a read-only reviewer subagent.",
+    "zh-CN": "开 PR 前的审查：一个技能、一个斜杠命令、一个只读的审查子 Agent。"
+  },
+  "id": "jia.review-kit",
+  "kind": "harness",
+  "license": {
+    "spdx": "MIT"
+  },
+  "min_app_version": "0.9.0",
+  "name": {
+    "en": "Review kit",
+    "zh-CN": "审查工具箱"
+  },
+  "schema": 1,
+  "tier": 1,
+  "tools": [
+    "claude",
+    "codex",
+    "grok"
+  ],
+  "version": "0.1.0"
+}

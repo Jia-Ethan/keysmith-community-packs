@@ -5,7 +5,7 @@
 - 包格式权威来源：官方仓库 `Jia-Ethan/keysmith-switch-extensions` 的 `SPEC.md`。
 - 校验器：本仓库 `scripts/packlib.py`，从官方仓库**原样 vendored**。不要在这里改它；官方更新了就重新 vendored 一份。
 
-## 与官方包的三点不同
+## 与官方包的四点不同
 
 ### 1. 命名空间
 
@@ -34,9 +34,16 @@
 
 `scripts/build_index.py` 为每个包生成一条 schema 1 索引条目，并挂上该包的 `meta` 块给画廊用。写出是确定性的（键排序、两空格缩进、末尾换行），同样的包产出同样的字节。阶段 0 还没有发布，所以 `url` 用 `--base-url` 的占位前缀；有了正式发布地址再指过去。
 
+### 4. 组件包不能跨包撞名
+
+组件包（`kind: "harness"`，官方 SPEC §2.2）在包内已经不允许重名。社区仓库再加一条：**任何两个包都不能用同一个组件名**。技能和斜杠命令共用 `/名字` 这一个名字空间，子 Agent、规则各自一个。先合并的包先占用；后来的 PR 要换名字。`scripts/check.py` 和 `build_index.py` 都会查。
+
+画廊索引里，组件包的条目另带 `tier` 和 `components`（每项只有 `id`、`type`、`name`、`tools`、`title`，不带文件内容）。
+
 ## 不变的部分（强调）
 
 - **只含数据，无可执行代码。** 校验器拒绝清单外的任何文件、符号链接、`..` 路径。
 - 提示词文件 UTF-8、非空、≤ 256 KiB；整包 ≤ 4 MiB；zip ≤ 2 MiB。
 - 已存在的 `id`+`version` 内容不可变；要改就升 `version`。
 - 规则包（`kind: "rules"`）规则同官方 SPEC §2.1；本仓库同样支持，但同样要带边车。
+- 组件包（`kind: "harness"`）规则同官方 SPEC §2.2：只收第 1 层，只能是 `.md`，frontmatter 白名单。同样要带边车。

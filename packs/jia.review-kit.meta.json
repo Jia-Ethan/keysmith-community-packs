@@ -1,0 +1,14 @@
+{
+  "author": {
+    "handle": "jia",
+    "name": "Jia",
+    "url": "https://github.com/Jia-Ethan"
+  },
+  "category": "code-review",
+  "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+  "submitted_at": "2026-11-01",
+  "summary": {
+    "en": "The first harness pack: a /pre-pr-review skill, a /review-staged command and a diff-reviewer subagent for Claude Code, Codex and Grok. Nothing in it runs code.",
+    "zh-CN": "第一个组件包：/pre-pr-review 技能、/review-staged 命令和一个 diff-reviewer 子 Agent，适用 Claude Code、Codex、Grok。包里没有任何会运行的代码。"
+  }
+}

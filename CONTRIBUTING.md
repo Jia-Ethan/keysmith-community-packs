@@ -4,25 +4,48 @@
 
 > 不会写代码？可以[提需求](docs/requests.md)；想找点事做？去[需求池](https://github.com/Jia-Ethan/keysmith-community-packs/issues?q=is%3Aissue+is%3Aopen+label%3Aready)评论 `/claim` 领一个。
 
-社区包是一组**内容**——提示词或输入替换规则——给 Keysmith 支持的编程 Agent 用（Codex、Claude、Grok、ZCode、pi、DSH）。它和 Keysmith Switch 官方拓展包**用同一套格式**（schema 1），所以你做的包将来 App 也能直接认。
+社区包是一组**内容**——提示词、输入替换规则，或者 Agent 的组件（技能、斜杠命令、子 Agent）——给 Keysmith 支持的编程 Agent 用（Codex、Claude、Grok、ZCode、pi、DSH）。它和 Keysmith Switch 官方拓展包**用同一套格式**（schema 1），所以你做的包将来 App 也能直接认。
 
 **包里没有可执行代码，只有数据。** 校验器会拒绝任何对不上清单的文件。
+
+> 第 2 层（会运行代码的 hook、MCP、插件等）现在还不收，想要的话先[提需求](docs/requests.md)。
 
 ## 一分钟上手
 
 1. 复制示范包 `packs/example.hello/` 和它的边车 `packs/example.hello.meta.json`。
 2. 改目录名为你的 `<handle>.<slug>`（例如 `alice.codex-review`），并把 `pack.json` 里的 `id` 改成同样的值。
 3. 写你的提示词正文到 `prompts/*.md`，更新 `pack.json` 里的 `name` / `description` / `items`。
-4. 更新每个提示词文件的 `sha256`（下面有命令）。
+4. 填 `sha256`：运行 `python3 scripts/seal.py packs/<id>`，它会算好并写回 `pack.json`。
 5. 填好边车 `packs/<id>.meta.json`（作者、画廊文案）。
 6. 本地校验，然后开 PR。
 
 ```bash
-# 填 sha256
-python3 -c "import hashlib,sys;print(hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest())" packs/<id>/prompts/你的文件.md
-# 校验（必须全 ok）
+# 填 sha256 并校验这个包
+python3 scripts/seal.py packs/<id>
+# 校验全部（必须全 ok）
 python3 scripts/check.py
 ```
+
+## 组件包（技能、命令、子 Agent）
+
+除了提示词，还可以做**组件包**（`kind: "harness"`）：直接给 Agent 加技能、斜杠命令、子 Agent 或附加规则，适用 Claude Code、Codex、Grok Build。示范包是 [`packs/jia.review-kit/`](packs/jia.review-kit/)。
+
+```
+packs/<id>/
+  pack.json                       kind: "harness", tier: 1, min_app_version: "0.9.0"
+  components/<id>/SKILL.md        技能（可以再放几个 .md）
+  components/<id>.md              斜杠命令、子 Agent 或规则，一个组件一个文件
+```
+
+要点（完整规则见官方 SPEC §2.2）：
+
+- **只收第 1 层：装上不运行任何代码。** 只能是 `.md` 文件。
+- **frontmatter 是白名单。** 技能只能写 `name`、`description`；命令只能写 `description`、`argument-hint`；子 Agent 只能写 `name`、`description`；规则不写 frontmatter。`allowed-tools`、`hooks`、`model`、`tools`、`mcpServers`、`permissionMode` 等一律拒绝。
+- 正文里不能有 `` !`命令` `` 或 ```` ```! ```` 代码块（Claude Code 会当 shell 执行），也不能用 `@~/`、`@/` 这类引用项目外的文件。
+- **名字不能和别的包撞。** 技能和命令都用 `/名字` 调用，所以两者共用一个名字空间。CI 会检查所有已合并的包，撞了就换一个名字。`ks-`、`keysmith` 开头的名字和各家内置命令名不能用。
+- Codex 没有斜杠命令和规则文件，这两种组件的 `tools` 不要写 `codex`。
+
+App 0.9.0 之前装不了组件包，画廊会给出手动安装的步骤。
 
 ## 命名规则
 

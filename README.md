@@ -30,7 +30,7 @@
 
 <img src="docs/assets/readme/agents.webp" alt="支持的 Agent：Claude Code、Codex、Grok Build、ZCode、pi、DSH" width="100%" />
 
-社区包和 [Keysmith Switch](https://github.com/Jia-Ethan/keysmith-switch) 的官方拓展包用的是**同一套格式**。包里只放提示词和规则，**不含任何可执行代码**。
+社区包和 [Keysmith Switch](https://github.com/Jia-Ethan/keysmith-switch) 的官方拓展包用的是**同一套格式**。包里放提示词、规则，或者 Agent 的组件（技能、斜杠命令、子 Agent），**不含任何可执行代码**。
 
 ## 怎么用
 
