@@ -1,46 +1,85 @@
-# Keysmith Community Packs
+<!-- markdownlint-disable MD013 MD033 MD041 -->
 
-> 中文：[README.md](README.md) · Format: [docs/SPEC-community.md](docs/SPEC-community.md) · Contribute: [CONTRIBUTING.en.md](CONTRIBUTING.en.md)
+<div align="center">
 
-Community-made **prompt packs** and **input-replacement rule packs** for the
-coding agents Keysmith supports: Codex, Claude, Grok, ZCode, pi, DSH.
+<img src="docs/assets/readme/hero.webp" alt="A walnut display tray holding six different keys, with Keysmith's gold { } key in the centre, on a warm oil-painted background" width="100%" />
 
-Same format (schema 1) as the official [Keysmith Switch](https://github.com/Jia-Ethan/keysmith-switch)
-extension packs, so a pack you make here is already in the shape the App can
-consume later. **Packs contain data only, no executable code.**
+<h1>Keysmith Community Packs</h1>
 
-## Using a pack (for now)
+<p><b>Prompt packs made by the community, all in one place. Pick one and use it, or add your own.</b></p>
 
-Community packs aren't one-click installable in the App yet (that's a later
-stage). For now:
+<p>
+  <a href="https://keysmithswitch.com/en/packs/"><img src="https://img.shields.io/badge/gallery-keysmithswitch.com-C8643B?style=flat-square" alt="Gallery" /></a>
+  <a href="https://github.com/Jia-Ethan/keysmith-community-packs/actions/workflows/ci.yml"><img src="https://github.com/Jia-Ethan/keysmith-community-packs/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/Jia-Ethan/keysmith-community-packs/stargazers"><img src="https://img.shields.io/github/stars/Jia-Ethan/keysmith-community-packs?style=flat-square&color=%232f81f7" alt="GitHub Stars" /></a>
+  <img src="https://img.shields.io/badge/license-MIT-6DB33F?style=flat-square" alt="MIT" />
+  <a href="https://t.me/+xBqLYA65JPU1NjFk"><img src="https://img.shields.io/badge/Telegram-group-26A5E4?style=flat-square&logo=telegram&logoColor=white" alt="Telegram" /></a>
+</p>
 
-1. Browse the [gallery](https://keysmithswitch.com/) (once live) or `packs/` here.
-2. Copy the prompt text into Keysmith Switch's "my prompts", or download the pack.
+<p>
+  <a href="https://keysmithswitch.com/en/packs/"><b>Browse the gallery</b></a> ·
+  <a href="CONTRIBUTING.en.md"><b>Contribute</b></a> ·
+  <a href="docs/SPEC-community.md">Format</a> ·
+  <a href="README.md">简体中文</a>
+</p>
 
-## Contributing
+</div>
 
-Copy the example pack `packs/example.hello/`, run `python3 scripts/check.py`
-until it's all green, and open a PR. Full steps in [CONTRIBUTING.en.md](CONTRIBUTING.en.md).
+## Works with six agents
 
-- Pack id is `<your-handle>.<slug>`; the `keysmith.` prefix is reserved for official packs.
-- Each pack has a sidecar `packs/<id>.meta.json` (author + gallery copy).
-- A maintainer **reviews content by hand** before merging; CI only checks format.
+<img src="docs/assets/readme/agents.webp" alt="Supported agents: Claude Code, Codex, Grok Build, ZCode, pi, DSH" width="100%" />
 
-## What's in here
+Community packs use **the same format** as the official [Keysmith Switch](https://github.com/Jia-Ethan/keysmith-switch) extension packs. A pack holds prompts and rules only, **never executable code**.
+
+## Use a pack
+
+<img src="docs/assets/readme/use-en.webp" alt="01 Browse → 02 Copy → 03 Use in Switch" width="100%" />
+
+Pick a pack in the **[gallery](https://keysmithswitch.com/en/packs/)**, copy its prompt, and paste it into "My prompts" in Keysmith Switch. One-click install inside the app is planned.
+
+## Contribute a pack
+
+<img src="docs/assets/readme/contrib-en.webp" alt="01 Copy template → 02 Write → 03 Check → 04 Open a PR" width="100%" />
+
+```bash
+# 01 copy the example pack (pack folder + sidecar)
+cp -r packs/example.hello           packs/<handle>.<slug>
+cp    packs/example.hello.meta.json packs/<handle>.<slug>.meta.json
+# 02 write prompts/*.md, edit pack.json and the sidecar
+python3 scripts/check.py           # 03 everything must say ok
+# 04 open a PR
+```
+
+Full steps in **[CONTRIBUTING.en.md](CONTRIBUTING.en.md)**. Pack ids look like `<handle>.<slug>`; ids starting with `keysmith.` are reserved for official packs.
+
+## Every pack is reviewed by a person
+
+<img src="docs/assets/readme/review-en.webp" alt="01 CI: format → 02 Human review → 03 Merge → 04 Live in gallery" width="100%" />
+
+CI checks the format only. A maintainer reads every pack before merging ([review checklist](docs/review-checklist.md)). Once merged, the pack shows up in the website gallery on its next automatic rebuild.
+
+<details>
+<summary><b>What's in this repo</b></summary>
 
 ```
 packs/<id>/            a community pack (schema 1, content only)
 packs/<id>.meta.json   its sidecar: author, gallery copy, category
-scripts/packlib.py     the official validator (vendored, do not edit)
-scripts/check.py       local/CI validation
+scripts/check.py       validation, local and in CI
 scripts/build_index.py builds community-index.json for the gallery
-community-index.json   build artifact the website gallery reads
+scripts/packlib.py     the official validator (vendored as is, do not edit)
 docs/                  format spec, review checklist
 ```
 
-## Related projects
+</details>
 
-- [Keysmith Switch](https://github.com/Jia-Ethan/keysmith-switch) — desktop manager for agent instructions
-- [codex-keysmith](https://github.com/Jia-Ethan/codex-keysmith) · [claude-keysmith](https://github.com/Jia-Ethan/claude-keysmith) · [grok-keysmith](https://github.com/Jia-Ethan/grok-keysmith) · [zcode-keysmith](https://github.com/Jia-Ethan/zcode-keysmith) · [pi-keysmith](https://github.com/Jia-Ethan/pi-keysmith) · [dsh-keysmith](https://github.com/Jia-Ethan/dsh-keysmith)
+## The Keysmith family
 
-If these projects help you, star them — and come share a pack.
+- [**Keysmith Switch**](https://github.com/Jia-Ethan/keysmith-switch): a desktop app that manages the prompts of all your agents in one place
+- Instruction packs per agent: [codex-keysmith](https://github.com/Jia-Ethan/codex-keysmith) · [claude-keysmith](https://github.com/Jia-Ethan/claude-keysmith) · [grok-keysmith](https://github.com/Jia-Ethan/grok-keysmith) · [zcode-keysmith](https://github.com/Jia-Ethan/zcode-keysmith) · [pi-keysmith](https://github.com/Jia-Ethan/pi-keysmith) · [dsh-keysmith](https://github.com/Jia-Ethan/dsh-keysmith)
+
+<div align="center">
+<br />
+
+**Find it useful? Give it a ⭐ star. Have a prompt that works well? Share it as a pack.**
+
+</div>

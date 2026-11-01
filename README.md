@@ -1,41 +1,85 @@
-# Keysmith 社区包
+<!-- markdownlint-disable MD013 MD033 MD041 -->
 
-> English: [README.en.md](README.en.md) · 格式：[docs/SPEC-community.md](docs/SPEC-community.md) · 投稿：[CONTRIBUTING.md](CONTRIBUTING.md)
+<div align="center">
 
-社区做的**提示词包**和**输入替换规则包**，给 Keysmith 支持的编程 Agent 用：Codex、Claude、Grok、ZCode、pi、DSH。
+<img src="docs/assets/readme/hero.webp" alt="一个胡桃木陈列盘，六格里各放一把不同的钥匙，中间是 Keysmith 的金色 { } 钥匙；背景是暖色油画" width="100%" />
 
-和 [Keysmith Switch](https://github.com/Jia-Ethan/keysmith-switch) 官方拓展包**同一套格式**（schema 1），所以你在这里做的包将来 App 也能直接认。**包里只有数据，没有可执行代码。**
+<h1>Keysmith 社区包</h1>
 
-## 怎么用（现阶段）
+<p><b>大家做的提示词包，都放在这里。挑一个就能用，你做的也可以放进来。</b></p>
 
-社区包暂时还不在 App 里一键安装（那是后续阶段）。现在：
+<p>
+  <a href="https://keysmithswitch.com/packs/"><img src="https://img.shields.io/badge/%E7%94%BB%E5%BB%8A-keysmithswitch.com-C8643B?style=flat-square" alt="画廊" /></a>
+  <a href="https://github.com/Jia-Ethan/keysmith-community-packs/actions/workflows/ci.yml"><img src="https://github.com/Jia-Ethan/keysmith-community-packs/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/Jia-Ethan/keysmith-community-packs/stargazers"><img src="https://img.shields.io/github/stars/Jia-Ethan/keysmith-community-packs?style=flat-square&color=%232f81f7" alt="GitHub Stars" /></a>
+  <img src="https://img.shields.io/badge/license-MIT-6DB33F?style=flat-square" alt="MIT" />
+  <a href="https://t.me/+xBqLYA65JPU1NjFk"><img src="https://img.shields.io/badge/Telegram-%E4%BA%A4%E6%B5%81%E7%BE%A4-26A5E4?style=flat-square&logo=telegram&logoColor=white" alt="Telegram" /></a>
+</p>
 
-1. 在[画廊](https://keysmithswitch.com/)（上线后）或本仓库 `packs/` 里浏览。
-2. 把提示词正文复制进 Keysmith Switch 的"我的提示词"，或下载这个包。
+<p>
+  <a href="https://keysmithswitch.com/packs/"><b>逛画廊</b></a> ·
+  <a href="CONTRIBUTING.md"><b>投稿</b></a> ·
+  <a href="docs/SPEC-community.md">格式</a> ·
+  <a href="README.en.md">English</a>
+</p>
+
+</div>
+
+## 六个 Agent，都能用
+
+<img src="docs/assets/readme/agents.webp" alt="支持的 Agent：Claude Code、Codex、Grok Build、ZCode、pi、DSH" width="100%" />
+
+社区包和 [Keysmith Switch](https://github.com/Jia-Ethan/keysmith-switch) 的官方拓展包用的是**同一套格式**。包里只放提示词和规则，**不含任何可执行代码**。
+
+## 怎么用
+
+<img src="docs/assets/readme/use-zh.webp" alt="01 逛画廊 → 02 复制提示词 → 03 放进 Switch" width="100%" />
+
+到 **[画廊](https://keysmithswitch.com/packs/)** 挑一个包，复制里面的提示词，粘贴进 Keysmith Switch 的"我的提示词"就行。App 内一键安装是后续计划。
 
 ## 投稿一个包
 
-照着示范包 `packs/example.hello/` 抄，本地跑 `python3 scripts/check.py` 全绿后开 PR。完整步骤见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+<img src="docs/assets/readme/contrib-zh.webp" alt="01 复制模板 → 02 写提示词 → 03 本地校验 → 04 开 PR" width="100%" />
 
-- 包 id 形如 `<你的handle>.<slug>`；`keysmith.` 开头是官方保留的。
-- 每个包配一个边车 `packs/<id>.meta.json`（作者 + 画廊文案）。
-- 维护者会**人工审核内容**后再合并；CI 只检查格式。
+```bash
+# 01 照着示范包抄（包目录 + 边车）
+cp -r packs/example.hello           packs/<handle>.<slug>
+cp    packs/example.hello.meta.json packs/<handle>.<slug>.meta.json
+# 02 写 prompts/*.md，改 pack.json 和边车
+python3 scripts/check.py           # 03 全部 ok 再提交
+# 04 开 PR
+```
 
-## 本仓库是什么
+详细步骤见 **[CONTRIBUTING.md](CONTRIBUTING.md)**。包 id 写成 `<handle>.<slug>`；`keysmith.` 开头的 id 留给官方包。
+
+## 每个包都经过人工审核
+
+<img src="docs/assets/readme/review-zh.webp" alt="01 CI 查格式 → 02 人工审内容 → 03 合并 → 04 画廊自动上架" width="100%" />
+
+CI 只检查格式，内容由维护者逐个人工审核，过了才合并（[审核清单](docs/review-checklist.md)）。合并后，官网画廊会在下一次自动重建时上架这个包。
+
+<details>
+<summary><b>仓库里有什么</b></summary>
 
 ```
-packs/<id>/            一个社区包（schema 1，纯内容）
-packs/<id>.meta.json   该包的边车：作者、画廊文案、分类
-scripts/packlib.py     官方校验器（vendored，勿改）
-scripts/check.py       本地/CI 校验
-scripts/build_index.py 生成 community-index.json 给画廊
-community-index.json   构建产物，官网画廊读它
+packs/<id>/            一个社区包（schema 1，只有内容）
+packs/<id>.meta.json   边车：作者、画廊文案、分类
+scripts/check.py       本地和 CI 用的校验
+scripts/build_index.py 生成画廊读取的 community-index.json
+scripts/packlib.py     官方校验器（原样复制过来，不要改）
 docs/                  格式说明、审核清单
 ```
 
-## 相关项目
+</details>
 
-- [Keysmith Switch](https://github.com/Jia-Ethan/keysmith-switch) — 统一管理各 Agent 指令的桌面端
-- [codex-keysmith](https://github.com/Jia-Ethan/codex-keysmith) · [claude-keysmith](https://github.com/Jia-Ethan/claude-keysmith) · [grok-keysmith](https://github.com/Jia-Ethan/grok-keysmith) · [zcode-keysmith](https://github.com/Jia-Ethan/zcode-keysmith) · [pi-keysmith](https://github.com/Jia-Ethan/pi-keysmith) · [dsh-keysmith](https://github.com/Jia-Ethan/dsh-keysmith)
+## Keysmith 系列
 
-喜欢这些项目的话，点个 star，也欢迎来投稿你的包。
+- [**Keysmith Switch**](https://github.com/Jia-Ethan/keysmith-switch)：桌面 App，一处管好所有 Agent 的提示词
+- 各 Agent 的指令包：[codex-keysmith](https://github.com/Jia-Ethan/codex-keysmith) · [claude-keysmith](https://github.com/Jia-Ethan/claude-keysmith) · [grok-keysmith](https://github.com/Jia-Ethan/grok-keysmith) · [zcode-keysmith](https://github.com/Jia-Ethan/zcode-keysmith) · [pi-keysmith](https://github.com/Jia-Ethan/pi-keysmith) · [dsh-keysmith](https://github.com/Jia-Ethan/dsh-keysmith)
+
+<div align="center">
+<br />
+
+**觉得有用，点个 ⭐ Star；有好用的提示词，欢迎投一个包。**
+
+</div>
