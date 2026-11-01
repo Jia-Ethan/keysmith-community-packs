@@ -4,6 +4,8 @@
 
 **包 id / Pack id:** `<handle>.<slug>`
 
+**回应的需求 / Request:** Closes #<!-- 编号，没有就删掉这行 / number, or delete this line -->
+
 ### 自检清单 / Checklist
 
 - [ ] 本地跑过 `python3 scripts/check.py`，全部 `ok` / Ran `python3 scripts/check.py` locally, all `ok`

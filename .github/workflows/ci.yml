@@ -25,6 +25,8 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Validate every pack and sidecar
         run: python3 scripts/check.py
+      - name: Unit tests (registry rules, request board)
+        run: python3 -m unittest discover -s tests -v
       - name: Build the gallery index (reproducible)
         run: |
           python3 scripts/build_index.py --generated-at 2026-01-01T00:00:00Z --out /tmp/index.json

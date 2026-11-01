@@ -18,6 +18,7 @@
 
 <p>
   <a href="https://keysmithswitch.com/en/packs/"><b>Browse the gallery</b></a> ·
+  <a href="https://github.com/Jia-Ethan/keysmith-community-packs/issues?q=is%3Aissue+is%3Aopen+label%3Aready"><b>Claim a request</b></a> ·
   <a href="CONTRIBUTING.en.md"><b>Contribute</b></a> ·
   <a href="docs/SPEC-community.md">Format</a> ·
   <a href="README.md">简体中文</a>
@@ -36,6 +37,12 @@ Community packs use **the same format** as the official [Keysmith Switch](https:
 <img src="docs/assets/readme/use-en.webp" alt="01 Browse → 02 Copy → 03 Use in Switch" width="100%" />
 
 Pick a pack in the **[gallery](https://keysmithswitch.com/en/packs/)**, copy its prompt, and paste it into "My prompts" in Keysmith Switch. One-click install inside the app is planned.
+
+## Don't code? File a request
+
+<img src="docs/assets/readme/request-en.webp" alt="01 Request → 02 Confirmed → 03 /claim → 04 Open a PR → 05 Credit both" width="100%" />
+
+**[File a request](https://github.com/Jia-Ethan/keysmith-community-packs/issues/new?template=request.yml)**: say what you want an agent to do and how we'll know it works. Builders pick it from the **[request pool](https://github.com/Jia-Ethan/keysmith-community-packs/issues?q=is%3Aissue+is%3Aopen+label%3Aready)** with `/claim`, open a PR, and the gallery credits both the idea and the build. Not just prompts: ideas that reshape the agent itself (commands, hooks, MCP…) are welcome too. [How it works](docs/requests.en.md)
 
 ## Contribute a pack
 

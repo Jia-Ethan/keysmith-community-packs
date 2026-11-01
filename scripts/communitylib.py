@@ -76,7 +76,7 @@ def _opt_url(value: Any, label: str) -> None:
 def validate_meta(meta: Any, pack_id: str, where: str) -> Dict[str, Any]:
     if not isinstance(meta, dict):
         raise CommunityError(f"{where}: must be a JSON object")
-    allowed = {"author", "summary", "category", "source_url", "submitted_at"}
+    allowed = {"author", "summary", "category", "source_url", "submitted_at", "request"}
     extra = set(meta) - allowed
     if extra:
         raise CommunityError(f"{where}: unknown keys {sorted(extra)}")
@@ -117,6 +117,19 @@ def validate_meta(meta: Any, pack_id: str, where: str) -> Dict[str, Any]:
     submitted = meta.get("submitted_at")
     if submitted is not None and (not isinstance(submitted, str) or not DATE.match(submitted)):
         raise CommunityError(f"{where}: submitted_at must be a YYYY-MM-DD date")
+
+    # The request this pack answers: the issue number and who asked, so the gallery can
+    # credit the idea and the build. Optional; the issue itself is the record.
+    request = meta.get("request")
+    if request is not None:
+        if not isinstance(request, dict) or set(request) - {"issue", "by"} or "issue" not in request:
+            raise CommunityError(f"{where}: request must be an object with issue (and optional by)")
+        issue = request["issue"]
+        if isinstance(issue, bool) or not isinstance(issue, int) or issue < 1:
+            raise CommunityError(f"{where}: request.issue must be a positive issue number")
+        by = request.get("by")
+        if by is not None and (not isinstance(by, str) or not HANDLE.match(by.lower()) or len(by) > MAX_HANDLE_LEN):
+            raise CommunityError(f"{where}: request.by must be a GitHub login")
     return meta
 
 

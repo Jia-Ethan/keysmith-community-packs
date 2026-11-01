@@ -1,0 +1,80 @@
+name: 💡 提一个需求 / Request a pack
+description: 说清楚你想让 Agent 做到什么，有人会领走来做。Describe what you want an agent to do; someone can claim it and build it.
+title: "[需求] "
+labels: ["request", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **不会写代码也能提。** 需求只要说准确：要实现什么目的、在哪个 Agent 上、怎样算做成。维护者确认后会标上 `ready`，任何人评论 `/claim` 就能领走去做。
+        **You don't need to code to file one.** Just be precise: the goal, which agent, and how we'll know it works. Once a maintainer marks it `ready`, anyone can comment `/claim` to take it.
+
+        流程说明 / How it works: [docs/requests.md](https://github.com/Jia-Ethan/keysmith-community-packs/blob/main/docs/requests.md)
+  - type: textarea
+    id: goal
+    attributes:
+      label: 想实现什么 / The goal
+      description: 一两句话说清目的，不是说实现方法。Say what you want to happen, not how to build it.
+      placeholder: |
+        例：每次 Claude Code 改完文件，自动按项目的格式化规则整理一遍，我不用再手动跑 prettier。
+        e.g. After Claude Code edits a file, it gets formatted with the project's formatter automatically.
+    validations:
+      required: true
+  - type: textarea
+    id: scenario
+    attributes:
+      label: 用在什么场景 / When you'd use it
+      description: 你在做什么的时候需要它？现在是怎么凑合的？What are you doing when you need this, and what do you do today?
+    validations:
+      required: true
+  - type: checkboxes
+    id: agents
+    attributes:
+      label: 针对哪个 Agent / Which agent(s)
+      options:
+        - label: Claude Code
+        - label: Codex
+        - label: Grok Build
+        - label: ZCode
+        - label: pi
+        - label: DSH
+        - label: 都行 / Any of them
+  - type: textarea
+    id: done
+    attributes:
+      label: 怎样算做成 / How we'll know it works
+      description: 写一两条能检查的标准。Write one or two checks anyone could run.
+      placeholder: |
+        - 改一个 .ts 文件后，文件已经被格式化
+        - 卸载后 Claude Code 恢复原样
+        - After editing a .ts file, it is already formatted
+        - Uninstalling leaves Claude Code as it was
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 你觉得它属于哪一类 / What kind of change (best guess)
+      description: 猜不准就选"不确定"，维护者会帮你归类。Pick "not sure" if unsure; a maintainer will sort it.
+      options:
+        - 不确定 / Not sure
+        - 提示词或输入替换（第 0 层）/ A prompt or input rewrite (tier 0)
+        - 命令、子 Agent、技能、配置（第 1 层，不跑代码）/ Commands, subagents, skills, config (tier 1, no code runs)
+        - 要跑代码：hook、MCP、插件、状态栏等（第 2 层）/ Runs code: hooks, MCP, plugins, statusline (tier 2)
+    validations:
+      required: true
+  - type: dropdown
+    id: build
+    attributes:
+      label: 你自己会做吗 / Will you build it yourself?
+      options:
+        - 我只提需求，等人来做 / Just the idea, someone else builds it
+        - 我想自己做 / I want to build it
+        - 可以一起做 / Happy to pair on it
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: 其他补充 / Anything else
+      description: 参考链接、截图、类似工具。Links, screenshots, similar tools.

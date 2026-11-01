@@ -1,0 +1,19 @@
+name: 🐞 某个包有问题 / Problem with a pack
+description: 已上架的包不好用、写错了或不合适。A listed pack is broken, wrong, or inappropriate.
+title: "[包问题] "
+labels: ["pack-problem"]
+body:
+  - type: input
+    id: pack
+    attributes:
+      label: 包 id / Pack id
+      placeholder: jia.code-review
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: 哪里不对 / What's wrong
+      description: 不合适的内容请直接说明，维护者会尽快处理。For inappropriate content, just say so; a maintainer will act quickly.
+    validations:
+      required: true

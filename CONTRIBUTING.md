@@ -2,6 +2,8 @@
 
 > English: [CONTRIBUTING.en.md](CONTRIBUTING.en.md)
 
+> 不会写代码？可以[提需求](docs/requests.md)；想找点事做？去[需求池](https://github.com/Jia-Ethan/keysmith-community-packs/issues?q=is%3Aissue+is%3Aopen+label%3Aready)评论 `/claim` 领一个。
+
 社区包是一组**内容**——提示词或输入替换规则——给 Keysmith 支持的编程 Agent 用（Codex、Claude、Grok、ZCode、pi、DSH）。它和 Keysmith Switch 官方拓展包**用同一套格式**（schema 1），所以你做的包将来 App 也能直接认。
 
 **包里没有可执行代码，只有数据。** 校验器会拒绝任何对不上清单的文件。
@@ -45,6 +47,7 @@ python3 scripts/check.py
 - `author.handle` **必须**和包 id 的第一段一致。
 - `summary` 至少填中文或英文，单条不超过 280 字符（这是画廊卡片文案，比 `description` 更口语）。
 - `category` / `source_url` / `submitted_at` 可选。
+- 如果这个包是在做某个[需求](docs/requests.md)，加上 `"request": { "issue": 12, "by": "提需求的人" }`，画廊会同时署名；PR 描述里写 `Closes #12`。
 
 ## license
 

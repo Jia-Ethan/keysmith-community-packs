@@ -2,6 +2,8 @@
 
 > 中文：[CONTRIBUTING.md](CONTRIBUTING.md)
 
+> Don't code? [File a request](docs/requests.en.md). Looking for something to build? Comment `/claim` on one in the [request pool](https://github.com/Jia-Ethan/keysmith-community-packs/issues?q=is%3Aissue+is%3Aopen+label%3Aready).
+
 A community pack is a set of **content** — prompts, or input-replacement rules —
 for the coding agents Keysmith supports (Codex, Claude, Grok, ZCode, pi, DSH).
 It uses the **same format** (schema 1) as the official Keysmith Switch
@@ -52,6 +54,7 @@ it (the validator forbids files a pack.json doesn't list).
 - `author.handle` **must** match the first segment of the pack id.
 - `summary` needs at least one of zh-CN / en, each ≤ 280 chars (this is the gallery card blurb; more conversational than `description`).
 - `category` / `source_url` / `submitted_at` are optional.
+- If the pack answers a [request](docs/requests.en.md), add `"request": { "issue": 12, "by": "the-requester" }` so the gallery credits both of you, and put `Closes #12` in the PR description.
 
 ## License
 
