@@ -5,8 +5,9 @@
     python3 scripts/check.py <dir>      # validate another packs dir
 
 Exit code 0 when everything is well formed, 1 otherwise. Checks format only
-(schema 1 + the community id/sidecar rules); whether the content belongs in the
-gallery is a human review decision.
+(schema 1 + the community id/sidecar rules + no two harness packs sharing a
+component name); whether the content belongs in the gallery is a human review
+decision.
 """
 
 from __future__ import annotations
@@ -30,12 +31,16 @@ def main() -> int:
         print("no packs yet (packs/ is empty)")
         return 0
     failed = False
+    manifests = []
     for directory in dirs:
         try:
             loaded = communitylib.load_community_pack(directory)
             manifest, meta = loaded["manifest"], loaded["meta"]
+            manifests.append(manifest)
             if manifest["kind"] == "prompts":
                 count = f"{len(manifest['items'])} items"
+            elif manifest["kind"] == "harness":
+                count = f"{len(manifest['components'])} components, tier {manifest['tier']}"
             else:
                 rules = json.loads((directory / "rules.json").read_text(encoding="utf-8"))["rules"]
                 count = f"{len(rules)} rules"
@@ -43,6 +48,12 @@ def main() -> int:
         except packlib.PackError as error:
             failed = True
             print(f"FAIL  {error}", file=sys.stderr)
+    # Rules across packs: two harness packs may not install the same component name.
+    try:
+        communitylib.check_component_names(manifests)
+    except packlib.PackError as error:
+        failed = True
+        print(f"FAIL  {error}", file=sys.stderr)
     return 1 if failed else 0
 
 

@@ -30,7 +30,7 @@
 
 <img src="docs/assets/readme/agents.webp" alt="Supported agents: Claude Code, Codex, Grok Build, ZCode, pi, DSH" width="100%" />
 
-Community packs use **the same format** as the official [Keysmith Switch](https://github.com/Jia-Ethan/keysmith-switch) extension packs. A pack holds prompts and rules only, **never executable code**.
+Community packs use **the same format** as the official [Keysmith Switch](https://github.com/Jia-Ethan/keysmith-switch) extension packs. A pack holds prompts, rules, or agent components (skills, slash commands, subagents), **never executable code**.
 
 ## Use a pack
 

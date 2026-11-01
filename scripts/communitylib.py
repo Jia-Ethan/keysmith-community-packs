@@ -155,19 +155,42 @@ def iter_pack_dirs(packs_dir: Path) -> List[Path]:
     return sorted(p for p in Path(packs_dir).iterdir() if p.is_dir())
 
 
+def check_component_names(manifests: List[Dict[str, Any]]) -> None:
+    """No two harness packs may use the same component name in the same namespace.
+
+    Inside one pack ``packlib`` already enforces this. Across packs it is a registry
+    rule: two packs that both install ``/review`` would fight over the same file on
+    a user's machine, so the second one to arrive picks another name.
+    """
+    owner: Dict[Any, str] = {}
+    for manifest in sorted(manifests, key=lambda m: m["id"]):
+        if manifest["kind"] != "harness":
+            continue
+        for component in manifest["components"]:
+            key = (packlib.COMPONENT_NAMESPACE[component["type"]], component["name"])
+            if key in owner and owner[key] != manifest["id"]:
+                shown = component["name"] if key[0] != "invocable" else "/" + component["name"]
+                raise CommunityError(
+                    f"{manifest['id']}: {component['type']} {shown!r} is already used by {owner[key]}; pick another name"
+                )
+            owner[key] = manifest["id"]
+
+
 def validate_all(packs_dir: Path) -> List[Dict[str, Any]]:
-    """Validate every pack and sidecar. Raises on the first failure in a dir;
-    the caller decides whether to keep going. Returns loaded packs."""
-    return [load_community_pack(d) for d in iter_pack_dirs(packs_dir)]
+    """Validate every pack and sidecar, then the cross-pack rules. Raises on the
+    first failure; the caller decides whether to keep going. Returns loaded packs."""
+    loaded = [load_community_pack(d) for d in iter_pack_dirs(packs_dir)]
+    check_component_names([pack["manifest"] for pack in loaded])
+    return loaded
 
 
 def build_community_index(packs_dir: Path, base_url: str, generated_at: str) -> Dict[str, Any]:
     """A schema-1 index entry per pack, each with a registry ``meta`` block
     the gallery renders. Deterministic bytes via packlib.canonical_json."""
     entries: List[Dict[str, Any]] = []
-    for pack_dir in iter_pack_dirs(packs_dir):
-        loaded = load_community_pack(pack_dir)
+    for loaded in validate_all(packs_dir):
         manifest, meta = loaded["manifest"], loaded["meta"]
+        pack_dir = Path(packs_dir) / manifest["id"]
         archive = packlib.build_zip(pack_dir)
         if len(archive) > packlib.MAX_ARCHIVE_BYTES:
             raise CommunityError(f"{manifest['id']}: archive is larger than {packlib.MAX_ARCHIVE_BYTES} bytes")
@@ -198,6 +221,11 @@ def build_community_index(packs_dir: Path, base_url: str, generated_at: str) -> 
                 }
                 for item in manifest.get("items", [])
             ]
+        # Harness packs: the tier and what each component is (type, name, agents, title),
+        # never file contents. The gallery lists them with manual-install steps.
+        if manifest["kind"] == "harness":
+            entry["tier"] = manifest["tier"]
+            entry["components"] = packlib.component_summary(manifest)
         # License badge on the detail page, when the pack declares one.
         if isinstance(manifest.get("license"), dict) and manifest["license"].get("spdx"):
             entry["license"] = {"spdx": manifest["license"]["spdx"]}
