@@ -1,0 +1,38 @@
+{
+  "description": {
+    "en": "Treat the task as a spec: a behaviour checklist, tests against it, edges covered, then the implementation.",
+    "zh-CN": "把任务当规格:先列行为清单、照清单写测试、覆盖边界,双方对齐后再写实现。"
+  },
+  "id": "jia.test-first",
+  "items": [
+    {
+      "file": "prompts/test-first.md",
+      "id": "test-first",
+      "sha256": "48e17c06bd815fa081cebd2a57f959ac53cefebec46aff46a823d66e1812a27c",
+      "tags": [
+        "testing",
+        "tdd",
+        "workflow"
+      ],
+      "title": {
+        "en": "Write the tests first",
+        "zh-CN": "先写测试再写实现"
+      },
+      "tool": "codex"
+    }
+  ],
+  "kind": "prompts",
+  "license": {
+    "spdx": "MIT"
+  },
+  "min_app_version": "0.2.5",
+  "name": {
+    "en": "Tests first",
+    "zh-CN": "测试先行"
+  },
+  "schema": 1,
+  "tools": [
+    "codex"
+  ],
+  "version": "0.1.0"
+}

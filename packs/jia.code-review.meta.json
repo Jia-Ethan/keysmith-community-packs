@@ -1,0 +1,14 @@
+{
+  "author": {
+    "handle": "jia",
+    "name": "Jia",
+    "url": "https://github.com/Jia-Ethan"
+  },
+  "category": "code-review",
+  "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+  "submitted_at": "2026-11-01",
+  "summary": {
+    "en": "Have Claude review your diff like a teammate before you open the PR — severity-tagged, pointed at the line, with the fix and a one-line verdict.",
+    "zh-CN": "开 PR 之前先让 Claude 像队友一样审一遍 diff:分 blocker / should-fix / nit,指到行、给修法、给一句结论。"
+  }
+}

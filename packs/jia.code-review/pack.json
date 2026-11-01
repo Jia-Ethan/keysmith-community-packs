@@ -1,0 +1,38 @@
+{
+  "description": {
+    "en": "Review your diff like a careful teammate: issues by severity, each pointed at the line with a fix.",
+    "zh-CN": "像队友一样过一遍改动,按严重程度挑出问题,每条都指到行并给出修法。"
+  },
+  "id": "jia.code-review",
+  "items": [
+    {
+      "file": "prompts/review-diff.md",
+      "id": "review-diff",
+      "sha256": "eb77237cc8e92e934e2fde09adcf736012d0c07c5f3ea7d8eaae7f5409dfe1ef",
+      "tags": [
+        "code-review",
+        "diff",
+        "pr"
+      ],
+      "title": {
+        "en": "Review the diff before a PR",
+        "zh-CN": "开 PR 前过一遍 diff"
+      },
+      "tool": "claude"
+    }
+  ],
+  "kind": "prompts",
+  "license": {
+    "spdx": "MIT"
+  },
+  "min_app_version": "0.2.5",
+  "name": {
+    "en": "Code review · before the PR",
+    "zh-CN": "代码审查 · 开 PR 前"
+  },
+  "schema": 1,
+  "tools": [
+    "claude"
+  ],
+  "version": "0.1.0"
+}

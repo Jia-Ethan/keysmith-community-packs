@@ -1,0 +1,38 @@
+{
+  "description": {
+    "en": "Read the diff and write one honest, well-shaped commit message: imperative subject, a why-body when needed.",
+    "zh-CN": "读 diff 写一条诚实、规范的提交信息:祈使句主题行,必要时再加解释 why 的正文。"
+  },
+  "id": "jia.commit-messages",
+  "items": [
+    {
+      "file": "prompts/commit-message.md",
+      "id": "commit-message",
+      "sha256": "b658ee3388d43b9dd488824eb3ad9635c23083cca5680084a69c710e1370ad38",
+      "tags": [
+        "git",
+        "commit",
+        "workflow"
+      ],
+      "title": {
+        "en": "Write a commit message from staged changes",
+        "zh-CN": "根据暂存改动写提交信息"
+      },
+      "tool": "codex"
+    }
+  ],
+  "kind": "prompts",
+  "license": {
+    "spdx": "MIT"
+  },
+  "min_app_version": "0.2.5",
+  "name": {
+    "en": "Commit messages",
+    "zh-CN": "提交信息"
+  },
+  "schema": 1,
+  "tools": [
+    "codex"
+  ],
+  "version": "0.1.0"
+}

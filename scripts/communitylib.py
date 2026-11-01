@@ -173,6 +173,21 @@ def build_community_index(packs_dir: Path, base_url: str, generated_at: str) -> 
             "size": len(archive),
             "meta": meta,
         }
+        # Prompt-pack items the gallery detail page lists (id/tool/title/tags only;
+        # never the prompt body or its sha). Rule packs carry no items.
+        if manifest["kind"] == "prompts":
+            entry["items"] = [
+                {
+                    "id": item["id"],
+                    "tool": item["tool"],
+                    "title": item["title"],
+                    **({"tags": item["tags"]} if item.get("tags") else {}),
+                }
+                for item in manifest.get("items", [])
+            ]
+        # License badge on the detail page, when the pack declares one.
+        if isinstance(manifest.get("license"), dict) and manifest["license"].get("spdx"):
+            entry["license"] = {"spdx": manifest["license"]["spdx"]}
         if manifest.get("opaque") is True:
             entry["opaque"] = True
         entries.append(entry)

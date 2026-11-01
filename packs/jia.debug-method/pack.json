@@ -1,0 +1,37 @@
+{
+  "description": {
+    "en": "Understand before you touch code: restate, hypothesize, test cheaply, converge, then fix.",
+    "zh-CN": "先搞清现象再动手:复述 bug、列假设、找最便宜的验证、逐轮收敛,证实原因再修。"
+  },
+  "id": "jia.debug-method",
+  "items": [
+    {
+      "file": "prompts/debug-method.md",
+      "id": "debug-method",
+      "sha256": "1d58fe45c960a5123bd2a7145148f542201b92eaa9e9733ce35074b6cdafbd5e",
+      "tags": [
+        "debugging",
+        "method"
+      ],
+      "title": {
+        "en": "Debug methodically",
+        "zh-CN": "系统化地定位 bug"
+      },
+      "tool": "claude"
+    }
+  ],
+  "kind": "prompts",
+  "license": {
+    "spdx": "MIT"
+  },
+  "min_app_version": "0.2.5",
+  "name": {
+    "en": "Methodical debugging",
+    "zh-CN": "系统化调试"
+  },
+  "schema": 1,
+  "tools": [
+    "claude"
+  ],
+  "version": "0.1.0"
+}
