@@ -1,0 +1,14 @@
+{
+  "author": {
+    "handle": "example",
+    "name": "Keysmith",
+    "url": "https://github.com/Jia-Ethan"
+  },
+  "category": "workflow",
+  "source_url": "https://keysmithswitch.com/",
+  "submitted_at": "2026-11-01",
+  "summary": {
+    "en": "A minimal, copy-this-shape example: one prompt for Codex. Use it as the template for your own pack.",
+    "zh-CN": "一个最小示范，照着抄格式：给 Codex 的一条提示词。拿它当你自己做包的模板。"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "generated_at": "2026-11-01T00:00:00Z",
+  "packs": [
+    {
+      "description": {
+        "en": "A tiny example prompt that asks the agent to end with a one-line, reversible change summary.",
+        "zh-CN": "一个示范提示词：让 Agent 在结束时用一句话总结改动并说明如何撤销。"
+      },
+      "id": "example.hello",
+      "item_count": 1,
+      "kind": "prompts",
+      "meta": {
+        "author": {
+          "handle": "example",
+          "name": "Keysmith",
+          "url": "https://github.com/Jia-Ethan"
+        },
+        "category": "workflow",
+        "source_url": "https://keysmithswitch.com/",
+        "submitted_at": "2026-11-01",
+        "summary": {
+          "en": "A minimal, copy-this-shape example: one prompt for Codex. Use it as the template for your own pack.",
+          "zh-CN": "一个最小示范，照着抄格式：给 Codex 的一条提示词。拿它当你自己做包的模板。"
+        }
+      },
+      "min_app_version": "0.2.5",
+      "name": {
+        "en": "Hello (example pack)",
+        "zh-CN": "Hello（示范包）"
+      },
+      "sha256": "17cc450d176d2f9b9f3b07b31718e610ebf3f2f339c513b2ec795c0268d80972",
+      "size": 870,
+      "tools": [
+        "codex"
+      ],
+      "url": "https://example.invalid/community-packs/example.hello-0.1.0.zip",
+      "version": "0.1.0"
+    }
+  ],
+  "schema": 1
+}

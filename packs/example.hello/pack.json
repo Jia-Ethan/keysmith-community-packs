@@ -1,0 +1,37 @@
+{
+  "description": {
+    "en": "A tiny example prompt that asks the agent to end with a one-line, reversible change summary.",
+    "zh-CN": "一个示范提示词：让 Agent 在结束时用一句话总结改动并说明如何撤销。"
+  },
+  "id": "example.hello",
+  "items": [
+    {
+      "file": "prompts/hello.md",
+      "id": "hello",
+      "sha256": "0a25db4a3490c6d9c284ad71635d7df8e3170111c66c29dc5044bf395435017f",
+      "tags": [
+        "example",
+        "summary"
+      ],
+      "title": {
+        "en": "End with a reversible one-line summary",
+        "zh-CN": "用一句可撤销的话收尾"
+      },
+      "tool": "codex"
+    }
+  ],
+  "kind": "prompts",
+  "license": {
+    "spdx": "MIT"
+  },
+  "min_app_version": "0.2.5",
+  "name": {
+    "en": "Hello (example pack)",
+    "zh-CN": "Hello（示范包）"
+  },
+  "schema": 1,
+  "tools": [
+    "codex"
+  ],
+  "version": "0.1.0"
+}

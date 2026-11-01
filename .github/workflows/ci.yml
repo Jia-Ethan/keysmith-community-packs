@@ -1,0 +1,32 @@
+name: ci
+
+# Fork-safe: `pull_request` (not pull_request_target), read-only, no secrets.
+# A PR from a stranger's fork can run this but cannot touch the repo or read
+# any secret. Format is checked here; whether content belongs in the gallery
+# is a human review decision before merge.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  packs:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Validate every pack and sidecar
+        run: python3 scripts/check.py
+      - name: Build the gallery index (reproducible)
+        run: |
+          python3 scripts/build_index.py --generated-at 2026-01-01T00:00:00Z --out /tmp/index.json
+          python3 scripts/build_index.py --generated-at 2026-01-01T00:00:00Z --out /tmp/index2.json
+          cmp /tmp/index.json /tmp/index2.json

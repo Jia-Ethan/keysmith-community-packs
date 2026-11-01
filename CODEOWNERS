@@ -1,0 +1,4 @@
+# Every change needs the maintainer's review before it can merge.
+# Pair this with a branch protection rule on `main`:
+#   Settings → Branches → require a pull request + require review from Code Owners.
+* @Jia-Ethan
