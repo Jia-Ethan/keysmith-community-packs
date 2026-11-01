@@ -1,0 +1,14 @@
+{
+  "author": {
+    "handle": "jia",
+    "name": "Jia",
+    "url": "https://github.com/Jia-Ethan"
+  },
+  "category": "testing",
+  "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+  "submitted_at": "2026-11-01",
+  "summary": {
+    "en": "Codex turns the task into a behaviour checklist and tests first — empty/zero/one/many, null, boundaries — then writes the implementation that passes them.",
+    "zh-CN": "让 Codex 先把任务变成行为清单和测试,覆盖空/零/一/多、null、边界等易错点,双方对齐后再写让测试通过的实现。"
+  }
+}

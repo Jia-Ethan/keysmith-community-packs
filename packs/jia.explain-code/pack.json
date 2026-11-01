@@ -1,0 +1,38 @@
+{
+  "description": {
+    "en": "Not just read it — change it safely: I/O and side effects, the main path, and the load-bearing assumptions.",
+    "zh-CN": "不只是读懂,是改得动:讲清输入输出与副作用、主路径与分支、一改就容易破坏的假设。"
+  },
+  "id": "jia.explain-code",
+  "items": [
+    {
+      "file": "prompts/explain-code.md",
+      "id": "explain-code",
+      "sha256": "390b9ca222b6725c09efb5a7d86242af2cb798c66ab56acfadb3de943944d998",
+      "tags": [
+        "explain",
+        "onboarding",
+        "reading"
+      ],
+      "title": {
+        "en": "Understand unfamiliar code",
+        "zh-CN": "读懂一段陌生代码"
+      },
+      "tool": "zcode"
+    }
+  ],
+  "kind": "prompts",
+  "license": {
+    "spdx": "MIT"
+  },
+  "min_app_version": "0.2.5",
+  "name": {
+    "en": "Explain unfamiliar code",
+    "zh-CN": "解释陌生代码"
+  },
+  "schema": 1,
+  "tools": [
+    "zcode"
+  ],
+  "version": "0.1.0"
+}

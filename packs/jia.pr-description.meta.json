@@ -1,0 +1,14 @@
+{
+  "author": {
+    "handle": "jia",
+    "name": "Jia",
+    "url": "https://github.com/Jia-Ethan"
+  },
+  "category": "workflow",
+  "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+  "submitted_at": "2026-11-01",
+  "summary": {
+    "en": "Grok turns your branch diff into a PR description a reviewer gets in thirty seconds: What / Why / How / Testing / Risk, empty sections dropped.",
+    "zh-CN": "让 Grok 读分支 diff,写成审查者三十秒能看懂的 PR 描述:What / Why / How / Testing / Risk,空的段就省掉。"
+  }
+}

@@ -8,7 +8,24 @@
       },
       "id": "example.hello",
       "item_count": 1,
+      "items": [
+        {
+          "id": "hello",
+          "tags": [
+            "example",
+            "summary"
+          ],
+          "title": {
+            "en": "End with a reversible one-line summary",
+            "zh-CN": "用一句可撤销的话收尾"
+          },
+          "tool": "codex"
+        }
+      ],
       "kind": "prompts",
+      "license": {
+        "spdx": "MIT"
+      },
       "meta": {
         "author": {
           "handle": "example",
@@ -34,6 +51,323 @@
         "codex"
       ],
       "url": "https://example.invalid/community-packs/example.hello-0.1.0.zip",
+      "version": "0.1.0"
+    },
+    {
+      "description": {
+        "en": "Review your diff like a careful teammate: issues by severity, each pointed at the line with a fix.",
+        "zh-CN": "像队友一样过一遍改动,按严重程度挑出问题,每条都指到行并给出修法。"
+      },
+      "id": "jia.code-review",
+      "item_count": 1,
+      "items": [
+        {
+          "id": "review-diff",
+          "tags": [
+            "code-review",
+            "diff",
+            "pr"
+          ],
+          "title": {
+            "en": "Review the diff before a PR",
+            "zh-CN": "开 PR 前过一遍 diff"
+          },
+          "tool": "claude"
+        }
+      ],
+      "kind": "prompts",
+      "license": {
+        "spdx": "MIT"
+      },
+      "meta": {
+        "author": {
+          "handle": "jia",
+          "name": "Jia",
+          "url": "https://github.com/Jia-Ethan"
+        },
+        "category": "code-review",
+        "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+        "submitted_at": "2026-11-01",
+        "summary": {
+          "en": "Have Claude review your diff like a teammate before you open the PR — severity-tagged, pointed at the line, with the fix and a one-line verdict.",
+          "zh-CN": "开 PR 之前先让 Claude 像队友一样审一遍 diff:分 blocker / should-fix / nit,指到行、给修法、给一句结论。"
+        }
+      },
+      "min_app_version": "0.2.5",
+      "name": {
+        "en": "Code review · before the PR",
+        "zh-CN": "代码审查 · 开 PR 前"
+      },
+      "sha256": "3b5623630c043596202241ef52e2ecf04c7f3958750937bd62ba90fc0e865e59",
+      "size": 1387,
+      "tools": [
+        "claude"
+      ],
+      "url": "https://example.invalid/community-packs/jia.code-review-0.1.0.zip",
+      "version": "0.1.0"
+    },
+    {
+      "description": {
+        "en": "Read the diff and write one honest, well-shaped commit message: imperative subject, a why-body when needed.",
+        "zh-CN": "读 diff 写一条诚实、规范的提交信息:祈使句主题行,必要时再加解释 why 的正文。"
+      },
+      "id": "jia.commit-messages",
+      "item_count": 1,
+      "items": [
+        {
+          "id": "commit-message",
+          "tags": [
+            "git",
+            "commit",
+            "workflow"
+          ],
+          "title": {
+            "en": "Write a commit message from staged changes",
+            "zh-CN": "根据暂存改动写提交信息"
+          },
+          "tool": "codex"
+        }
+      ],
+      "kind": "prompts",
+      "license": {
+        "spdx": "MIT"
+      },
+      "meta": {
+        "author": {
+          "handle": "jia",
+          "name": "Jia",
+          "url": "https://github.com/Jia-Ethan"
+        },
+        "category": "git",
+        "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+        "submitted_at": "2026-11-01",
+        "summary": {
+          "en": "Codex reads your staged diff and writes a clean commit message: an imperative subject under 60 chars, a why-body when needed, matching the repo's style.",
+          "zh-CN": "让 Codex 读暂存的 diff 写一条规范提交信息:60 字以内的祈使句主题行,必要时加解释 why 的正文,跟随仓库已有风格。"
+        }
+      },
+      "min_app_version": "0.2.5",
+      "name": {
+        "en": "Commit messages",
+        "zh-CN": "提交信息"
+      },
+      "sha256": "98aa8f2ebaecaafe4af619bab3f79b73465ccd25edda7611bbc91b72cbbf5e01",
+      "size": 1258,
+      "tools": [
+        "codex"
+      ],
+      "url": "https://example.invalid/community-packs/jia.commit-messages-0.1.0.zip",
+      "version": "0.1.0"
+    },
+    {
+      "description": {
+        "en": "Understand before you touch code: restate, hypothesize, test cheaply, converge, then fix.",
+        "zh-CN": "先搞清现象再动手:复述 bug、列假设、找最便宜的验证、逐轮收敛,证实原因再修。"
+      },
+      "id": "jia.debug-method",
+      "item_count": 1,
+      "items": [
+        {
+          "id": "debug-method",
+          "tags": [
+            "debugging",
+            "method"
+          ],
+          "title": {
+            "en": "Debug methodically",
+            "zh-CN": "系统化地定位 bug"
+          },
+          "tool": "claude"
+        }
+      ],
+      "kind": "prompts",
+      "license": {
+        "spdx": "MIT"
+      },
+      "meta": {
+        "author": {
+          "handle": "jia",
+          "name": "Jia",
+          "url": "https://github.com/Jia-Ethan"
+        },
+        "category": "debugging",
+        "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+        "submitted_at": "2026-11-01",
+        "summary": {
+          "en": "No guessing — Claude restates the bug, lists falsifiable hypotheses, finds the cheapest test, halves the search each round, and only then proposes the smallest fix.",
+          "zh-CN": "不乱猜:让 Claude 先复述 bug、列可证伪的假设、找最便宜的验证,每轮把范围减半,证实原因后再给最小修法。"
+        }
+      },
+      "min_app_version": "0.2.5",
+      "name": {
+        "en": "Methodical debugging",
+        "zh-CN": "系统化调试"
+      },
+      "sha256": "1424cb9a487c7000399c810bdd58cac1546352426a6763508eeb318aa57042a3",
+      "size": 1352,
+      "tools": [
+        "claude"
+      ],
+      "url": "https://example.invalid/community-packs/jia.debug-method-0.1.0.zip",
+      "version": "0.1.0"
+    },
+    {
+      "description": {
+        "en": "Not just read it — change it safely: I/O and side effects, the main path, and the load-bearing assumptions.",
+        "zh-CN": "不只是读懂,是改得动:讲清输入输出与副作用、主路径与分支、一改就容易破坏的假设。"
+      },
+      "id": "jia.explain-code",
+      "item_count": 1,
+      "items": [
+        {
+          "id": "explain-code",
+          "tags": [
+            "explain",
+            "onboarding",
+            "reading"
+          ],
+          "title": {
+            "en": "Understand unfamiliar code",
+            "zh-CN": "读懂一段陌生代码"
+          },
+          "tool": "zcode"
+        }
+      ],
+      "kind": "prompts",
+      "license": {
+        "spdx": "MIT"
+      },
+      "meta": {
+        "author": {
+          "handle": "jia",
+          "name": "Jia",
+          "url": "https://github.com/Jia-Ethan"
+        },
+        "category": "understanding",
+        "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+        "submitted_at": "2026-11-01",
+        "summary": {
+          "en": "ZCode explains unfamiliar code so you can change it safely: a one-line summary, I/O and side effects, the main path and branches, and the assumptions a change could break.",
+          "zh-CN": "让 ZCode 把一段陌生代码讲到你能安全改动:一句话定位、输入输出与副作用、主路径与分支、以及一改就容易踩的假设。"
+        }
+      },
+      "min_app_version": "0.2.5",
+      "name": {
+        "en": "Explain unfamiliar code",
+        "zh-CN": "解释陌生代码"
+      },
+      "sha256": "7161a272ad4420c6cbaf2dfc66d2b0d2752736b63219ef2173d14957ef6c1aa3",
+      "size": 1331,
+      "tools": [
+        "zcode"
+      ],
+      "url": "https://example.invalid/community-packs/jia.explain-code-0.1.0.zip",
+      "version": "0.1.0"
+    },
+    {
+      "description": {
+        "en": "Turn a branch diff into a What / Why / How / Testing / Risk description.",
+        "zh-CN": "把分支与基线的差异整理成 What / Why / How / Testing / Risk 的 PR 描述。"
+      },
+      "id": "jia.pr-description",
+      "item_count": 1,
+      "items": [
+        {
+          "id": "pr-description",
+          "tags": [
+            "pr",
+            "git",
+            "workflow"
+          ],
+          "title": {
+            "en": "Draft a PR description from the diff",
+            "zh-CN": "根据 diff 起草 PR 描述"
+          },
+          "tool": "grok"
+        }
+      ],
+      "kind": "prompts",
+      "license": {
+        "spdx": "MIT"
+      },
+      "meta": {
+        "author": {
+          "handle": "jia",
+          "name": "Jia",
+          "url": "https://github.com/Jia-Ethan"
+        },
+        "category": "workflow",
+        "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+        "submitted_at": "2026-11-01",
+        "summary": {
+          "en": "Grok turns your branch diff into a PR description a reviewer gets in thirty seconds: What / Why / How / Testing / Risk, empty sections dropped.",
+          "zh-CN": "让 Grok 读分支 diff,写成审查者三十秒能看懂的 PR 描述:What / Why / How / Testing / Risk,空的段就省掉。"
+        }
+      },
+      "min_app_version": "0.2.5",
+      "name": {
+        "en": "PR descriptions",
+        "zh-CN": "PR 描述"
+      },
+      "sha256": "4cd0111c81000e645c7b3231646a5efa49ad977e9d351159ee1b4958e1e78192",
+      "size": 1204,
+      "tools": [
+        "grok"
+      ],
+      "url": "https://example.invalid/community-packs/jia.pr-description-0.1.0.zip",
+      "version": "0.1.0"
+    },
+    {
+      "description": {
+        "en": "Treat the task as a spec: a behaviour checklist, tests against it, edges covered, then the implementation.",
+        "zh-CN": "把任务当规格:先列行为清单、照清单写测试、覆盖边界,双方对齐后再写实现。"
+      },
+      "id": "jia.test-first",
+      "item_count": 1,
+      "items": [
+        {
+          "id": "test-first",
+          "tags": [
+            "testing",
+            "tdd",
+            "workflow"
+          ],
+          "title": {
+            "en": "Write the tests first",
+            "zh-CN": "先写测试再写实现"
+          },
+          "tool": "codex"
+        }
+      ],
+      "kind": "prompts",
+      "license": {
+        "spdx": "MIT"
+      },
+      "meta": {
+        "author": {
+          "handle": "jia",
+          "name": "Jia",
+          "url": "https://github.com/Jia-Ethan"
+        },
+        "category": "testing",
+        "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+        "submitted_at": "2026-11-01",
+        "summary": {
+          "en": "Codex turns the task into a behaviour checklist and tests first — empty/zero/one/many, null, boundaries — then writes the implementation that passes them.",
+          "zh-CN": "让 Codex 先把任务变成行为清单和测试,覆盖空/零/一/多、null、边界等易错点,双方对齐后再写让测试通过的实现。"
+        }
+      },
+      "min_app_version": "0.2.5",
+      "name": {
+        "en": "Tests first",
+        "zh-CN": "测试先行"
+      },
+      "sha256": "a9e6e4d6ba01267acfe7a66eeb7682d4b41b45417fb8350d1551976b109d7be6",
+      "size": 1289,
+      "tools": [
+        "codex"
+      ],
+      "url": "https://example.invalid/community-packs/jia.test-first-0.1.0.zip",
       "version": "0.1.0"
     }
   ],

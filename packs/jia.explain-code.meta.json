@@ -1,0 +1,14 @@
+{
+  "author": {
+    "handle": "jia",
+    "name": "Jia",
+    "url": "https://github.com/Jia-Ethan"
+  },
+  "category": "understanding",
+  "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+  "submitted_at": "2026-11-01",
+  "summary": {
+    "en": "ZCode explains unfamiliar code so you can change it safely: a one-line summary, I/O and side effects, the main path and branches, and the assumptions a change could break.",
+    "zh-CN": "让 ZCode 把一段陌生代码讲到你能安全改动:一句话定位、输入输出与副作用、主路径与分支、以及一改就容易踩的假设。"
+  }
+}

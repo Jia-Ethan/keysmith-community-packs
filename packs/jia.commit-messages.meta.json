@@ -1,0 +1,14 @@
+{
+  "author": {
+    "handle": "jia",
+    "name": "Jia",
+    "url": "https://github.com/Jia-Ethan"
+  },
+  "category": "git",
+  "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+  "submitted_at": "2026-11-01",
+  "summary": {
+    "en": "Codex reads your staged diff and writes a clean commit message: an imperative subject under 60 chars, a why-body when needed, matching the repo's style.",
+    "zh-CN": "让 Codex 读暂存的 diff 写一条规范提交信息:60 字以内的祈使句主题行,必要时加解释 why 的正文,跟随仓库已有风格。"
+  }
+}

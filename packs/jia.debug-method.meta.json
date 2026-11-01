@@ -1,0 +1,14 @@
+{
+  "author": {
+    "handle": "jia",
+    "name": "Jia",
+    "url": "https://github.com/Jia-Ethan"
+  },
+  "category": "debugging",
+  "source_url": "https://github.com/Jia-Ethan/keysmith-community-packs",
+  "submitted_at": "2026-11-01",
+  "summary": {
+    "en": "No guessing — Claude restates the bug, lists falsifiable hypotheses, finds the cheapest test, halves the search each round, and only then proposes the smallest fix.",
+    "zh-CN": "不乱猜:让 Claude 先复述 bug、列可证伪的假设、找最便宜的验证,每轮把范围减半,证实原因后再给最小修法。"
+  }
+}

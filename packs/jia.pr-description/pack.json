@@ -1,0 +1,38 @@
+{
+  "description": {
+    "en": "Turn a branch diff into a What / Why / How / Testing / Risk description.",
+    "zh-CN": "把分支与基线的差异整理成 What / Why / How / Testing / Risk 的 PR 描述。"
+  },
+  "id": "jia.pr-description",
+  "items": [
+    {
+      "file": "prompts/pr-description.md",
+      "id": "pr-description",
+      "sha256": "3b157ca0dd617ec342a814a8343b5bd6267653c5cf12a2a3f2b4e636bddbe2e9",
+      "tags": [
+        "pr",
+        "git",
+        "workflow"
+      ],
+      "title": {
+        "en": "Draft a PR description from the diff",
+        "zh-CN": "根据 diff 起草 PR 描述"
+      },
+      "tool": "grok"
+    }
+  ],
+  "kind": "prompts",
+  "license": {
+    "spdx": "MIT"
+  },
+  "min_app_version": "0.2.5",
+  "name": {
+    "en": "PR descriptions",
+    "zh-CN": "PR 描述"
+  },
+  "schema": 1,
+  "tools": [
+    "grok"
+  ],
+  "version": "0.1.0"
+}
