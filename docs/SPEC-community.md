@@ -26,6 +26,7 @@
 | `category` | 可选，短小写 slug（≤ 32） |
 | `source_url` | 可选，http(s) URL |
 | `submitted_at` | 可选，`YYYY-MM-DD` |
+| `request` | 可选，`{ "issue": <正整数>, "by": "<GitHub 用户名>" }`：这个包回应的需求编号和提需求的人，画廊用来同时署名；`by` 可省略 |
 
 除以上字段外的键一律拒绝。
 

@@ -1,0 +1,39 @@
+name: request board
+
+# `/claim` and `/unclaim` on request issues, and a daily sweep of quiet claims.
+# Runs the bot from the default branch (issue_comment and schedule always do), so a
+# comment or a fork cannot change what runs. The comment text is data: the bot reads it
+# from the event file and only matches it against two fixed commands.
+on:
+  issue_comment:
+    types: [created]
+  schedule:
+    - cron: "41 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: request-board-${{ github.event.issue.number || 'sweep' }}
+  cancel-in-progress: false
+
+jobs:
+  comment:
+    if: github.event_name == 'issue_comment' && !github.event.issue.pull_request && contains(github.event.issue.labels.*.name, 'request')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/claimbot.py comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  sweep:
+    if: github.event_name != 'issue_comment'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/claimbot.py sweep
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

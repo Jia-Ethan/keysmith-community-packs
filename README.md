@@ -18,6 +18,7 @@
 
 <p>
   <a href="https://keysmithswitch.com/packs/"><b>逛画廊</b></a> ·
+  <a href="https://github.com/Jia-Ethan/keysmith-community-packs/issues?q=is%3Aissue+is%3Aopen+label%3Aready"><b>领需求</b></a> ·
   <a href="CONTRIBUTING.md"><b>投稿</b></a> ·
   <a href="docs/SPEC-community.md">格式</a> ·
   <a href="README.en.md">English</a>
@@ -36,6 +37,12 @@
 <img src="docs/assets/readme/use-zh.webp" alt="01 逛画廊 → 02 复制提示词 → 03 放进 Switch" width="100%" />
 
 到 **[画廊](https://keysmithswitch.com/packs/)** 挑一个包，复制里面的提示词，粘贴进 Keysmith Switch 的"我的提示词"就行。App 内一键安装是后续计划。
+
+## 不会写代码？提个需求
+
+<img src="docs/assets/readme/request-zh.webp" alt="01 提需求 → 02 确认可做 → 03 /claim 领取 → 04 开 PR → 05 两人署名" width="100%" />
+
+**[提一个需求](https://github.com/Jia-Ethan/keysmith-community-packs/issues/new?template=request.yml)**，说清楚想让 Agent 做到什么、怎样算做成。想动手的人在 **[需求池](https://github.com/Jia-Ethan/keysmith-community-packs/issues?q=is%3Aissue+is%3Aopen+label%3Aready)** 评论 `/claim` 领走，做好开 PR，画廊同时署上点子和实现两个人。不只是提示词，改造 Agent 本身的需求（命令、hook、MCP……）也欢迎。[流程说明](docs/requests.md)
 
 ## 投稿一个包
 
