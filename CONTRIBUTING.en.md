@@ -2,7 +2,7 @@
 
 > 中文：[CONTRIBUTING.md](CONTRIBUTING.md)
 
-> Don't code? [File a request](docs/requests.en.md). Looking for something to build? Comment `/claim` on one in the [request pool](https://github.com/Jia-Ethan/keysmith-community-packs/issues?q=is%3Aissue+is%3Aopen+label%3Aready).
+> Don't code? [File a request](docs/requests.en.md). Looking for something to build? Comment `/claim` on one in the [request pool](https://keysmithswitch.com/en/requests/).
 
 A community pack is a set of **content** — prompts, input-replacement rules, or
 agent components (skills, slash commands, subagents) — for the coding agents Keysmith supports (Codex, Claude, Grok, ZCode, pi, DSH).

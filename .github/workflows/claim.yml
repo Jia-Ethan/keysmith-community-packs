@@ -1,12 +1,17 @@
 name: request board
 
-# `/claim` and `/unclaim` on request issues, and a daily sweep of quiet claims.
-# Runs the bot from the default branch (issue_comment and schedule always do), so a
-# comment or a fork cannot change what runs. The comment text is data: the bot reads it
-# from the event file and only matches it against two fixed commands.
+# `/claim` and `/unclaim` on request issues, the `in-review` mark when a PR links to a
+# request, and a daily sweep of claim deadlines.
+#
+# Every job runs the bot from the default branch: issue_comment and schedule always do,
+# and pull_request_target checks out the base branch, never the PR. No PR code runs
+# here. The bot reads only the comment's first line and the PR's number from the event;
+# titles and bodies never reach a shell.
 on:
   issue_comment:
     types: [created]
+  pull_request_target:
+    types: [opened, reopened, edited, closed, ready_for_review, converted_to_draft]
   schedule:
     - cron: "41 2 * * *"
   workflow_dispatch:
@@ -14,9 +19,10 @@ on:
 permissions:
   contents: read
   issues: write
+  pull-requests: read
 
 concurrency:
-  group: request-board-${{ github.event.issue.number || 'sweep' }}
+  group: request-board-${{ github.event.issue.number && format('issue-{0}', github.event.issue.number) || github.event.pull_request.number && format('pr-{0}', github.event.pull_request.number) || 'sweep' }}
   cancel-in-progress: false
 
 jobs:
@@ -29,8 +35,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  pr:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    steps:
+      # The base branch (the default for pull_request_target), so the bot is ours.
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: python3 .github/scripts/claimbot.py pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   sweep:
-    if: github.event_name != 'issue_comment'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
