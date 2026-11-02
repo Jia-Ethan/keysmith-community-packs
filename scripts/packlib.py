@@ -100,10 +100,18 @@ RESERVED_AGENT_NAMES = frozenset({"default", "explore", "explorer", "general-pur
 PACK_ID = re.compile(r"^[a-z0-9]+([.-][a-z0-9]+)*$")
 ITEM_ID = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 COMPONENT_NAME = re.compile(r"^[a-z][a-z0-9]*(-[a-z0-9]+)*$")
+# One segment of a file path inside a harness pack. ASCII only: APFS and NTFS ignore case, and
+# APFS also folds Unicode (`ſ` onto `s`, `K` onto `K`, NFD onto NFC), so two names that look
+# different could be one file on disk and the second written would replace the first.
+COMPONENT_PATH_SEGMENT = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9._-]{0,63}$")
+# Names Windows reserves for devices: `aux.md` there is the AUX device, not a file.
+WINDOWS_DEVICE_NAMES = frozenset(
+    ["con", "prn", "aux", "nul"] + [f"com{i}" for i in range(1, 10)] + [f"lpt{i}" for i in range(1, 10)]
+)
 FRONTMATTER_LINE = re.compile(r"^([a-z][a-z0-9-]*):(?: +(.*))?$")
 # Plain scalars YAML reads as something other than a string (booleans, null, numbers, dates).
 YAML_NOT_A_STRING = re.compile(
-    r"^(?:true|false|yes|no|on|off|y|n|null|~|[-+]?0[xob][0-9a-f_]+|[-+.]?[0-9][0-9_.:e+-]*|[-+]?\.inf|\.nan)$",
+    r"^(?:true|false|yes|no|on|off|y|n|null|~|[-+]?0[xob][0-9a-f_]+|[-+]?\.?[0-9][0-9_.:e+-]*|[-+]?\.inf|\.nan)$",
     re.IGNORECASE,
 )
 # `!` followed by a backtick, or a fence whose info string starts with `!`: Claude Code runs
@@ -297,7 +305,12 @@ def _validate_harness_manifest(manifest: Dict[str, Any], tools: List[str], where
         if kind not in COMPONENT_TYPES:
             raise PackError(f"{label}: type must be one of {list(COMPONENT_TYPES)}")
         name = component.get("name")
-        if not isinstance(name, str) or not COMPONENT_NAME.match(name) or len(name) > MAX_COMPONENT_NAME:
+        if (
+            not isinstance(name, str)
+            or not COMPONENT_NAME.match(name)
+            or len(name) > MAX_COMPONENT_NAME
+            or name in WINDOWS_DEVICE_NAMES
+        ):
             raise PackError(
                 f"{label}: name must start with a letter and be lowercase letters, digits and hyphens (max {MAX_COMPONENT_NAME})"
             )
@@ -334,10 +347,19 @@ def _validate_harness_manifest(manifest: Dict[str, Any], tools: List[str], where
             path = safe_relative_path(entry["path"])
             if not path.endswith(".md"):
                 raise PackError(f"{at}: only .md files are allowed")
-            if path in paths or path.casefold() in folded:
+            for segment in path.split("/"):
+                if (
+                    not COMPONENT_PATH_SEGMENT.match(segment)
+                    or segment.endswith(".")
+                    or segment.split(".")[0].lower() in WINDOWS_DEVICE_NAMES
+                ):
+                    raise PackError(
+                        f"{at}: file names use ASCII letters, digits, '.', '_' and '-' only ({segment!r})"
+                    )
+            if path in paths or path.lower() in folded:
                 raise PackError(f"{at}: file {path!r} is used twice")
             paths.add(path)
-            folded.add(path.casefold())
+            folded.add(path.lower())
             if not isinstance(entry["sha256"], str) or not SHA256.match(entry["sha256"]):
                 raise PackError(f"{at}: sha256 must be 64 lowercase hex characters")
         listed = [entry["path"] for entry in files]
