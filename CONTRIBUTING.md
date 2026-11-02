@@ -2,7 +2,7 @@
 
 > English: [CONTRIBUTING.en.md](CONTRIBUTING.en.md)
 
-> 不会写代码？可以[提需求](docs/requests.md)；想找点事做？去[需求池](https://github.com/Jia-Ethan/keysmith-community-packs/issues?q=is%3Aissue+is%3Aopen+label%3Aready)评论 `/claim` 领一个。
+> 不会写代码？可以[提需求](docs/requests.md)；想找点事做？去[需求池](https://keysmithswitch.com/requests/)评论 `/claim` 领一个。
 
 社区包是一组**内容**——提示词、输入替换规则，或者 Agent 的组件（技能、斜杠命令、子 Agent）——给 Keysmith 支持的编程 Agent 用（Codex、Claude、Grok、ZCode、pi、DSH）。它和 Keysmith Switch 官方拓展包**用同一套格式**（schema 1），所以你做的包将来 App 也能直接认。
 

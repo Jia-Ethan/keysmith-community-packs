@@ -25,6 +25,8 @@ A maintainer reads each request and labels it:
 | `needs-triage` | New and waiting for a maintainer |
 | `needs-info` | Something is missing; please add it |
 | `ready` | Clear and buildable, **waiting for someone to claim it** |
+| `claimed` | Someone has claimed it and is building it (set by the bot) |
+| `in-review` | A PR is linked and **waiting for the maintainer's review** (set by the bot) |
 | `needs-backend` | Keysmith can't do this yet. It needs Keysmith itself to change first, and goes on the Keysmith Switch roadmap. |
 | `tier-0` / `tier-1` / `tier-2` | Which tier the change belongs to (see below) |
 
@@ -32,13 +34,16 @@ A maintainer reads each request and labels it:
 
 On a `ready` request, comment **`/claim`** on its own line. The bot assigns the request to you and labels it `claimed`.
 
-- You can hold up to 3 claims at a time.
+- **Open a PR within 14 days of claiming.** A draft PR counts.
+- With no PR by day 10, the bot reminds you once. With none by day 14, the request goes back to the pool for someone else.
+- You can hold up to 3 claims at a time; ones with a PR waiting for review don't count.
 - Changed your mind? Comment `/unclaim` to hand it back. No hard feelings.
-- After 14 quiet days you get a reminder, and any reply keeps the claim. If there's still no reply after 7 more days, the request goes back to the pool. An open PR counts as progress.
 
 ## 4. Open a PR
 
-Build the pack following [CONTRIBUTING.en.md](../CONTRIBUTING.en.md). Put `Closes #<request number>` in the PR description, and add this to the pack's sidecar:
+Build the pack following [CONTRIBUTING.en.md](../CONTRIBUTING.en.md). **Put `Closes #<request number>` in the PR description** so the PR links to the request: the bot labels the request `in-review`, posts the PR link, and the deadline stops. When the PR merges, the request closes. If the PR is closed without merging, the request stays yours and you get 14 days from that day.
+
+Add this to the pack's sidecar:
 
 ```json
 "request": { "issue": 12, "by": "the requester's GitHub login" }

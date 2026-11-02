@@ -4,7 +4,7 @@
 
 **包 id / Pack id:** `<handle>.<slug>`
 
-**回应的需求 / Request:** Closes #<!-- 编号，没有就删掉这行 / number, or delete this line -->
+**回应的需求 / Request:** Closes #<!-- 编号，没有就删掉这行。写了才会挂到需求上，期限也会停 / number, or delete this line. This links the PR to the request and stops its deadline -->
 
 ### 自检清单 / Checklist
 

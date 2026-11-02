@@ -3,6 +3,9 @@ contact_links:
   - name: 💬 还没想清楚的点子 / Half-formed idea
     url: https://github.com/Jia-Ethan/keysmith-community-packs/discussions/categories/ideas
     about: 先在讨论区聊，想清楚了再来提需求。Talk it through in Discussions first, then file a request.
+  - name: 📋 需求池 / Request pool
+    url: https://keysmithswitch.com/requests/
+    about: 看看别人提了什么、谁在做、哪些在等审核。See what's open, who's on what, and what's in review.
   - name: 🖼 逛画廊 / Browse the gallery
     url: https://keysmithswitch.com/packs/
     about: 看看已经有哪些社区包。See what packs already exist.

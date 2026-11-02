@@ -50,7 +50,8 @@
 
 - 新需求自动带 `request` + `needs-triage`。说得清楚（目的、Agent、怎样算做成）就换成 `ready`；缺信息就打 `needs-info`，并在评论里说明缺什么。
 - 再打一个层级标签 `tier-0` / `tier-1` / `tier-2`。现在 Keysmith 做不到的加 `needs-backend`，这些会进 Switch 路线图。
-- 领取、提醒和放回需求池都由机器人（`/claim`）处理。你要收回某个需求时，评论 `/unclaim` 即可。
+- 领取、提醒和放回需求池都由机器人（`/claim`）处理：领取后 14 天内要开 PR，第 10 天提醒，第 14 天放回。你要收回某个需求时，评论 `/unclaim` 即可。
+- 等你审的需求都带 `in-review`，评论里有 PR 链接：[待审核的需求](https://github.com/Jia-Ethan/keysmith-community-packs/issues?q=is%3Aissue+is%3Aopen+label%3Ain-review)。网站上的 [需求池](https://keysmithswitch.com/requests/) 也能看到。
 - 越界的需求（绕过安全策略、攻击他人）直接关闭。
 
 ## 合并之后
